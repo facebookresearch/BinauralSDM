@@ -47,7 +47,7 @@ If you use this code in your research, please cite the following [paper](https:/
   author    =     {Sebastia V. Amengual Gari and Johannes Arend and Paul Calamia and Philip Robinson},
   journal   =     {Journal of the Audio Engineering Society},
   volume    =     {68},
-  number	= 	  {12},
+  number    = 	  {12},
   pages     =     {959 -- 976},
   doi       =     {https://doi.org/10.17743/jaes.2020.0063}
   month     =     {12}
