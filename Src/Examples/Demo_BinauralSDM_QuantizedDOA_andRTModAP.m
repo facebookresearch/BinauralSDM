@@ -88,24 +88,30 @@ SDM_Struct = createSDMStruct('c',SpeedSound,...
                              'winLen',62);
 
 %% Download a HRIR from the Cologne audio team server
-% This step can be skipped if you already have a HRIR dataset
+% (skipped automatically if the HRIR dataset already exists)
+HRIR_URL = 'https://zenodo.org/record/3928297/files/HRIR_FULL2DEG.sofa?download=1';
+HRIR_Folder   = '../../Data/HRIRs/';
+HRIR_Filename = 'KU100_HRIR_FULL2DEG_Koeln.sofa';
+HRIR_Subject  = 'KU100'; % Name of the HRIR subject (only used for naming purposes while saving).
+HRIR_Type     = 'SOFA';  % File format of the HRIR. Only SOFA is supported for now.
 
-HRIRurl = 'https://zenodo.org/record/3928297/files/HRIR_FULL2DEG.sofa?download=1';
-HRIRfolder = '../../Data/HRIRs/';
-HRIRfilename = 'KU100_HRIR_FULL2DEG_Koeln.sofa';
-disp('Downloading HRIR Dataset');
-if ~exist(HRIRfolder,'dir')
-    mkdir(HRIRfolder)
+[~,~] = mkdir(HRIR_Folder); % ignore warning if directory already exists
+HRIR_Path = fullfile(HRIR_Folder, HRIR_Filename);
+clear HRIR_Folder HRIR_Filename;
+
+fprintf('Downloading HRIR Dataset ... ');
+if isfile(HRIR_Path)
+    disp('skipped.');
+else
+    websave(HRIR_Path, HRIR_URL);
+    disp('done.');
 end
-HRIRsave = websave([HRIRfolder HRIRfilename],HRIRurl);
 
 %% Rendering parameters
-QuantizeDOAFlag     = 1;                % Flag to determine if DOA information must me quantized.
+QuantizeDOAFlag = 1;                % Flag to determine if DOA information must me quantized.
 DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid
-HRIR_Subject    = 'KU100';          % Name of the HRIR subject (only used for naming purposes while saving).
-HRIR_Type       = 'SOFA';           % File format of the HRIR. Only SOFA is supported for now.
-HRIR_Path       = '../../Data/HRIRs/KU100_HRIR_FULL2DEG_Koeln.sofa'; % Relative path to the HRIR.
 NamingCond      = ['Quantized' num2str(DOADirections) 'DOA']; % String used for naming purposes, useful when rendering variations of the same RIR.
+NamingCond      = sprintf('Quantized%dDOA', DOADirections); % String used for naming purposes, useful when rendering variations of the same RIR.
 BRIRAtten       = 30;               % Attenuation of the rendered BRIRs (in dB). Useful to avoid clipping. Use the same value when rendering various
                                     % positions in the same room to maintain relative level differences.
 AzOrient        = (-180:2:180)';    % Render BRIRs every 2 degrees in azimuth
