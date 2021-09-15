@@ -35,10 +35,7 @@ end
 SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(SRIR_data.DSonset:end,:);
 SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end,:);
 
-disp('Smoothing DOA data'); tic;
 SRIR_data = Smooth_DOA(SRIR_data);
-timer = toc;
-disp(['Done! Time elapsed: ' num2str(timer) 'seconds']);
 
 if SRIR_data.AlignDOA == 1
     SRIR_data = align_DOA(SRIR_data);
@@ -47,3 +44,4 @@ end
 
 
 
+fprintf('\n');

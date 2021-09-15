@@ -43,6 +43,7 @@
 % folder containing this script before executing.
 
 %% Analysis parameter initialization
+tic; % start measuring execution time
 
 % Analysis parameters
 MicArray        = 'FRL_10cm';           % FRL Array is 7 mics, 10cm diameter, with central sensor. Supported geometries are FRL_10cm, FRL_5cm, 
@@ -99,12 +100,12 @@ HRIR_Type     = 'SOFA';  % File format of the HRIR. Only SOFA is supported for n
 HRIR_Path = fullfile(HRIR_Folder, HRIR_Filename);
 clear HRIR_Folder HRIR_Filename;
 
-fprintf('Downloading HRIR Dataset ... ');
+fprintf('Downloading HRIR dataset ... ');
 if isfile(HRIR_Path)
-    disp('skipped.');
+    fprintf('skipped.\n\n');
 else
     websave(HRIR_Path, HRIR_URL);
-    disp('done.');
+    fprintf('done.\n\n');
 end
 
 %% Rendering parameters
@@ -182,7 +183,7 @@ BRIR_Early = zeros((BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs,2,len
 nDirs = length(BRIR_data.Directions);
 
 % Render early reflections
-hbar = parfor_progressbar(nDirs,'Please wait, rendering (step 1/2)...');
+hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
 parfor iDir = 1:nDirs
     hbar.iterate(1);
     BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:),0);
@@ -217,7 +218,7 @@ end
 % -----------------------------------------------------------------------
 % 6. Save BRIRs
 
-hbar = parfor_progressbar(nDirs,'Please wait, saving (step 2/2)...');
+hbar = parfor_progressbar(nDirs, 'Please wait, saving (step 2/2) ...');
 parfor iDir = 1:nDirs
     SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ER_BRIR(:,:,iDir), late_BRIR,BRIR_data.Directions(iDir,:));
     hbar.iterate(1);
@@ -227,4 +228,5 @@ close(hbar)
 
 
 
-    
+%%
+fprintf('Completed in %.0fh %.0fm %.0fs.\n',toc/60/60,toc/60,mod(toc,60));
