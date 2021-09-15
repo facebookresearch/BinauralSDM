@@ -4,7 +4,7 @@ Matlab code to generate binaural RIRs for arbitrary head orientations using the 
 
 ## Installation and dependencies
 
-The following dependencies are necessary for the repository to run succesfully. Please make sure that they are included in your Matlab search path before executing any demo:
+The following dependencies are necessary for the repository to run successfully. Please make sure that they are included in your Matlab search path before executing any demo:
 
 - [SDM Toolbox for Matlab](https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox) (must be downloaded manually) - by Sakari Tervo and Jukka Patynen.
 
@@ -16,20 +16,28 @@ The following dependencies are necessary for the repository to run succesfully. 
 
 - `Denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
 
+- Matlab Curve Fitting Toolbox
+
+- Matlab Signal Processing Toolbox
+
+- Matlab Statistics and Machine Learning Toolbox
+
+- Matlab Parallel Computing Toolbox (may be skipped with minor code modifications)
+
 ## Demos
 
 Set your Matlab working directory to `./Src/Examples/` to execute the examples:
 
-- **`Demo_BinauralSDM_QuantizedDOA_andRTModAP.m`**  
-Generates BRIRs for a multitude of head orientations using the RTMod+AP equalization approach.   
-To ensure that the example runs, it performs the analysis and synthesis of an example RIR measured with the FRL Array (10 cm diameter) and using TDOA analysis.  
-The HRIR dataset (Neumann KU100) is downloaded on the fly from the TH Koeln Audio Group server. This can be easily swapped by any arbitrary HRIR dataset in SOFA format.  
-This example generated direction dependent early reflections and direction independent late reverberation, after an arbitrary (configurable) mixing time. The example also includes spatial quantization of the DOA information. The file can be modified
-in a straightforward manner to accommodate other analysis and rendering parameters and input data. 
+- [`Demo_BinauralSDM_QuantizedDOA_andRTModAP.m`](Src/Examples/Demo_BinauralSDM_QuantizedDOA_andRTModAP.m)
+Generates BRIRs for a multitude of head orientations using the RTMod+AP equalization approach.
+To ensure that the example runs, it performs the analysis and synthesis of an example RIR measured with the FRL Array (10 cm diameter) and using TDOA analysis.
+The HRIR dataset (Neumann KU100) is downloaded on the fly from the TH Koeln Audio Group server.
+This can be easily swapped by any arbitrary HRIR dataset in SOFA format.
+This example generated direction dependent early reflections and direction independent late reverberation, after an arbitrary (configurable) mixing time.
+The example also includes spatial quantization of the DOA information.
+The file can be modified in a straightforward manner to accommodate other analysis and rendering parameters and input data.
 
-
-More examples will be added in the future, featuring modified decay slopes for reverberation time manipulations, algorithmic late reverberation, and
-spatial manipulations. 
+More examples will be added in the future, featuring modified decay slopes for reverberation time manipulations, algorithmic late reverberation, and spatial manipulations. 
 
 ## Microphone arrays
 
