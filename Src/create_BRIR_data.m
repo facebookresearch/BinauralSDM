@@ -118,7 +118,6 @@ for i = 1:length(listNames)
     else
         disp([listNames{i} ' initialized with default values']);
     end
-    i
 end
 
 [rot_az, rot_el] = meshgrid(BRIR_data.AzOrient,BRIR_data.ElOrient);

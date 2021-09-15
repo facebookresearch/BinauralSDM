@@ -156,8 +156,6 @@ for i = 1:length(listNames)
     end
 end
 
-SRIR_data.fs
-
 % Build microphone array geometries
 SRIR_data.ArrayGeometry = create_MicGeometry(SRIR_data.MicArray);
 
