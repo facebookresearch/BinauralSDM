@@ -37,10 +37,14 @@
 % Method for Binaural Reproduction", JAES 2020.
 
 % Author: Sebastia Amengual (samengual@fb.com)
-% Last modified: 01/06/2021
+% Last modified: 09/15/2021
 
 % IMPORTANT NOTE: To ensure that relative paths work, navigate to the
 % folder containing this script before executing.
+
+clear; clc;
+
+addpath(genpath('../../'));
 
 %% Analysis parameter initialization
 tic; % start measuring execution time
@@ -111,13 +115,12 @@ end
 %% Rendering parameters
 QuantizeDOAFlag = 1;                % Flag to determine if DOA information must me quantized.
 DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid
-NamingCond      = ['Quantized' num2str(DOADirections) 'DOA']; % String used for naming purposes, useful when rendering variations of the same RIR.
 NamingCond      = sprintf('Quantized%dDOA', DOADirections); % String used for naming purposes, useful when rendering variations of the same RIR.
 BRIRAtten       = 30;               % Attenuation of the rendered BRIRs (in dB). Useful to avoid clipping. Use the same value when rendering various
                                     % positions in the same room to maintain relative level differences.
 AzOrient        = (-180:2:180)';    % Render BRIRs every 2 degrees in azimuth
 ElOrient        = (-90:5:90)';      % Render BRIRs every 5 degrees in elevation
-DestinationPath = 'C:/Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved
+DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved
 
 % Initialize re-synthesized BRIR struct
 BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
