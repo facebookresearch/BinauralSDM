@@ -16,13 +16,13 @@ The following dependencies are necessary for the repository to run successfully.
 
 - `Denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
 
-- Matlab Curve Fitting Toolbox
+- [Matlab Curve Fitting Toolbox](https://www.mathworks.com/products/curvefitting.html)
 
-- Matlab Signal Processing Toolbox
+- [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html)
 
-- Matlab Statistics and Machine Learning Toolbox
+- [Matlab Statistics and Machine Learning Toolbox](https://www.mathworks.com/products/statistics.html)
 
-- Matlab Parallel Computing Toolbox (may be skipped with minor code modifications)
+- [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (may be skipped with minor code modifications)
 
 ## Demos
 
