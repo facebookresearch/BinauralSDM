@@ -1,3 +1,13 @@
+## Project specific
+
+# desired recources can be added nevertheless
+# `git add --force Data/...`
+/Data/*
+
+# always include .gitignore in subdirectories
+!.gitignore
+
+
 ## Matlab specific according to
 ## https://github.com/github/gitignore/blob/5253281c9f6e78fec30644e3a36f137d29a3043c/Global/MATLAB.gitignore
 
