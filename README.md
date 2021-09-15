@@ -6,21 +6,21 @@ Matlab code to generate binaural RIRs for arbitrary head orientations using the 
 
 The following dependencies are necessary for the repository to run succesfully. Please make sure that they are included in your Matlab search path before executing any demo:
 
-- SDM Toolbox for Matlab (must be downloaded manually): https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox - by Sakari Tervo and Jukka Patynen.
+- [SDM Toolbox for Matlab](https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox) (must be downloaded manually) - by Sakari Tervo and Jukka Patynen.
 
-- SOFA API for Matlab (must be downloaded manually): https://github.com/sofacoustics/API_MO - by the SOFA conventions team.
+- [SOFA API for Matlab](https://github.com/sofacoustics/API_MO) (must be downloaded manually) - by the SOFA conventions team.
 
-- GetLebedevGrid.m (included) - by Robert Parrish.
+- `GetLebedevGrid.m` (included) - by Robert Parrish.
 
-- parfor_progressbar.m (included) - by Daniel Terry.
+- `parfor_progressbar.m` (included) - by Daniel Terry.
 
-- Denoise_RIR.m (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
+- `Denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
 
 ## Demos
 
-Set your Matlab working directory to ./Src/Examples to execute the examples:
+Set your Matlab working directory to `./Src/Examples/` to execute the examples:
 
-- **Demo_BinauralSDM_QuantizedDOA_andRTModAP.m**  
+- **`Demo_BinauralSDM_QuantizedDOA_andRTModAP.m`**  
 Generates BRIRs for a multitude of head orientations using the RTMod+AP equalization approach.   
 To ensure that the example runs, it performs the analysis and synthesis of an example RIR measured with the FRL Array (10 cm diameter) and using TDOA analysis.  
 The HRIR dataset (Neumann KU100) is downloaded on the fly from the TH Koeln Audio Group server. This can be easily swapped by any arbitrary HRIR dataset in SOFA format.  
@@ -33,11 +33,11 @@ spatial manipulations.
 
 ## Microphone arrays
 
-Files for 3D printing of a microphone array holder (FRL Array) are included in ./Data/ArrayDesigns/. These are hexahedral arrays (6 DPA 4060) with a center microphone (Earthworks M30/M50) and a diameter of 5 or 10cm.
+Files for 3D printing of a microphone array holder (FRL Array) are included in `./Data/ArrayDesigns/`. These are hexahedral arrays (6 DPA 4060) with a center microphone (Earthworks M30/M50) and a diameter of 5 or 10cm.
 
 <img src="./Data/ArrayDesigns/FRLArray_10cmDiameter_pic.jpg" width="200">
 
-Other array geometries can be accommodated by modifying the file ./Src/create_MicGeometry.m. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [3] for details and justification).
+Other array geometries can be accommodated by modifying the file `./Src/create_MicGeometry.m`. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [3] for details and justification).
 
 ## Citing BinauralSDM
 If you use this code in your research, please cite the following [paper](https://www.aes.org/e-lib/browse.cfm?elib=21010):
