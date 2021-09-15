@@ -11,7 +11,7 @@ function SaveRenderingStructs(SRIR_data, BRIR_data)
 %   Author: Sebastià V. Amengual
 %   Last modified: 7/11/19
 
-Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos];
+Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos];
 
 if ~exist([Save_Path filesep BRIR_data.RenderingCondition filesep], 'dir')
     mkdir([Save_Path filesep BRIR_data.RenderingCondition filesep]);
