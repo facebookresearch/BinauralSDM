@@ -31,3 +31,5 @@ if plotOpt
     grid on    
     linkaxes([s1 s2], 'x');
 end
+
+end

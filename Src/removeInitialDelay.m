@@ -16,3 +16,5 @@ end
 
 BRIR_TimeData = BRIR_TimeData(cutOffIndex:cutOffIndex+BRIR_Length-1,:,:);
 BRIR_Full = BRIR_Full(cutOffIndex:end,:,:);
+
+end

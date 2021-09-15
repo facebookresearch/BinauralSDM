@@ -2,7 +2,6 @@
 
 function [SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_data)
 
-
 [DOA_rad(:,1), DOA_rad(:,2), DOA_rad(:,3)] = cart2sph(SRIR_data.DOA(:,1), SRIR_data.DOA(:,2), SRIR_data.DOA(:,3));
 
 if strcmp(BRIR_data.HRTF_Type,'FRL_HRTF')
@@ -58,3 +57,4 @@ BRIR_data.FilterBank_snfft = (BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_dat
 [BRIR_data.G,BRIR_data.FilterBank_g,BRIR_data.FilterBank_f1,BRIR_data.FilterBank_f2] = ...
     oneOver_n_OctBandFilter(2*BRIR_data.FilterBank_snfft, BRIR_data.FilterBank_bandsperoctave, BRIR_data.fs, BRIR_data.FilterBank_minFreq , BRIR_data.FilterBank_maxFreq);
 
+end

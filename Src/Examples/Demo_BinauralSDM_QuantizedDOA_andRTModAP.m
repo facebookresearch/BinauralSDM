@@ -138,46 +138,46 @@ BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
 HRTF = Read_HRTF(BRIR_data);
 
 %% Analysis
-
 % Estimate directional information using SDM. This function is a wrapper of
 % the SDM Toolbox DOA estimation (using TDOA analysis) to include some 
 % post-processing. The actual DOA estimation is performed by the SDMPar.m 
 % function of the SDM Toolbox.
-SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct); 
-                                                
+SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
 
 %% Synthesis
-
 % 1. Pre-processing operations (massage HRTF directions, resolve DOA NaNs).
 
-[SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF);
+[SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = ...
+    PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF);
 
 % -----------------------------------------------------------------------
-%%% 2. Quantize DOA information, if required
+% 2. Quantize DOA information, if required
 
 if BRIR_data.QuantizeDOAFlag == 1
     [SRIR_data, idx] = QuantizeDOA(SRIR_data, BRIR_data.DOADirections, 128);
 end
 
 % -----------------------------------------------------------------------
-%%% 3. Compute parameters for RTMod Compensation
+% 3. Compute parameters for RTMod Compensation
 
 % Synthesize one direction to extract the reverb compensation - solving the
 % SDM synthesis spectral whitening
-PreBRIR = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0 0],1);
+PreBRIR = Synthesize_SDM_Binaural(...
+    SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], 1);
 
 % Using the pressure RIR as a reference for the reverberation compensation
-BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR SRIR_data.P_RIR];
+BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR, SRIR_data.P_RIR];
 
 % Get the desired T30 from the Pressure RIR and the actual T30 from one
 % rendered BRIR
-[DesiredT30, OriginalT30, RTFreqVector] = GetReverbTime(SRIR_data, PreBRIR,3); 
+[DesiredT30, OriginalT30, RTFreqVector] = GetReverbTime(SRIR_data, PreBRIR, 3); 
 
 % -----------------------------------------------------------------------
 % 4. Render BRIRs with RTMod compensation for the specified directions
 
 % Initialize BRIR matrix
-BRIR_Early = zeros((BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs,2,length(BRIR_data.Directions));
+BRIR_Early = zeros((BRIR_data.MixingTime + BRIR_data.TimeGuard) * BRIR_data.fs, ...
+    2, length(BRIR_data.Directions));
 
 % Render BRIRs
 nDirs = length(BRIR_data.Directions);
@@ -185,34 +185,38 @@ nDirs = length(BRIR_data.Directions);
 % Render early reflections
 hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
 parfor iDir = 1:nDirs
-    hbar.iterate(1);
-    BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:),0);
-    BRIR_TimeDataTemp = ModifyReverbSlope(BRIR_data, BRIR_TimeDataTemp, OriginalT30, DesiredT30, RTFreqVector);
+    hbar.iterate();
+    BRIR_TimeDataTemp = Synthesize_SDM_Binaural(...
+        SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:), 0);
+    BRIR_TimeDataTemp = ModifyReverbSlope(...
+        BRIR_data, BRIR_TimeDataTemp, OriginalT30, DesiredT30, RTFreqVector);
     BRIR_Early(:,:,iDir) = BRIR_TimeDataTemp;
 end
-close(hbar)
+close(hbar);
 
 % Render late reverb
 BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0 0],1);
 BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, OriginalT30, DesiredT30, RTFreqVector);
 
 % Remove leading zeros
-[BRIR_Early, BRIR_full] = removeInitialDelay(BRIR_Early,BRIR_full,-20,BRIR_data.MixingTime*BRIR_data.fs);
+[BRIR_Early, BRIR_full] = removeInitialDelay(...
+    BRIR_Early, BRIR_full, -20, BRIR_data.MixingTime * BRIR_data.fs);
 
 % Split the BRIR
-[early_BRIR, late_BRIR, DS_BRIR, ER_BRIR]  = split_BRIR(BRIR_Early, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
+[early_BRIR, late_BRIR, DS_BRIR, ER_BRIR]  = split_BRIR(...
+    BRIR_Early, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
 
 % -----------------------------------------------------------------------
 % 5. Apply AP processing for the late reverb
 
 % AllPass filtering for the late reverb (increasing diffuseness and
 % smoothing out the EDC)
-allpass_delays = [37 113 215 347];                      % in samples
-allpass_RT = [0.1 0.1 0.1 0.1];                         % in seconds
+allpass_delays = [37, 113, 215, 347]; % in samples
+allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
 
 for iAllPass=1:3
-    late_BRIR(:,1) = allpass_filter(late_BRIR(:,1),allpass_delays(iAllPass) , [0.1], 48e3);
-    late_BRIR(:,2) = allpass_filter(late_BRIR(:,2),allpass_delays(iAllPass) , [0.1], 48e3);
+    late_BRIR(:,1) = allpass_filter(late_BRIR(:,1), allpass_delays(iAllPass), 0.1, 48e3);
+    late_BRIR(:,2) = allpass_filter(late_BRIR(:,2), allpass_delays(iAllPass), 0.1, 48e3);
 end
 
 % -----------------------------------------------------------------------
@@ -220,13 +224,12 @@ end
 
 hbar = parfor_progressbar(nDirs, 'Please wait, saving (step 2/2) ...');
 parfor iDir = 1:nDirs
-    SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ER_BRIR(:,:,iDir), late_BRIR,BRIR_data.Directions(iDir,:));
-    hbar.iterate(1);
+    hbar.iterate();
+    SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ...
+        ER_BRIR(:,:,iDir), late_BRIR,BRIR_data.Directions(iDir,:));
 end
-SaveRenderingStructs(SRIR_data, BRIR_data)
-close(hbar)
-
-
+SaveRenderingStructs(SRIR_data, BRIR_data);
+close(hbar);
 
 %%
 fprintf('Completed in %.0fh %.0fm %.0fs.\n',toc/60/60,toc/60,mod(toc,60));

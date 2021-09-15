@@ -159,7 +159,6 @@ end
 % Build microphone array geometries
 SRIR_data.ArrayGeometry = create_MicGeometry(SRIR_data.MicArray);
 
-
 % Initializing data paths for the arrays
 % Assigning the number of samples that the omnidirectional channel has over
 % the raw signals. This delay will be corrected later in a circular shift during
@@ -167,7 +166,7 @@ SRIR_data.ArrayGeometry = create_MicGeometry(SRIR_data.MicArray);
 switch SRIR_data.MicArray
     case 'Eigenmike'
         SRIR_data.OmniMicLag = 25;
-        disp(['OmniMicLag set automatically to 25 samples (Eigenmike)'])
+        disp('OmniMicLag set automatically to 25 samples (Eigenmike)');
     case 'NoArray'
         error('It seems that you have not selected a microphone array...');
 end
@@ -175,3 +174,5 @@ end
 SRIR_data = read_RIR(SRIR_data);
 SRIR_data  = PreProcess_P_RIR(SRIR_data);
 SRIR_data = PreProcess_Raw_RIR(SRIR_data);
+
+end

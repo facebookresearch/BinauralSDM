@@ -11,7 +11,6 @@ function SRIR_data = PreProcess_P_RIR(SRIR_data)
 % Author: Sebastia V. Amengual
 % Last modified: 4/19/19
 
-
 % Denoising Pressure RIR
 if SRIR_data.Denoise == 1
     try
@@ -41,3 +40,5 @@ SRIR_data = getDSonset(SRIR_data);
 
 % Cropping RIR to desired length
 SRIR_data.P_RIR = SRIR_data.P_RIR(SRIR_data.DSonset:SRIR_data.DSonset+SRIR_data.fs*SRIR_data.Length-1,1);
+
+end

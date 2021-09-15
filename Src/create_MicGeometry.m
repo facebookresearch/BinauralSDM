@@ -65,4 +65,4 @@ switch micArray
         error('You are trying to create the geometry of a non-existent array :(')
 end
 
-
+end

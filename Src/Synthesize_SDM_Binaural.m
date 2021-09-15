@@ -25,8 +25,7 @@ function BRIR = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_
 % Author: Sebastia V. Amengual (samengual@fb.com)
 % Last modified: 04/15/2019
 
-%% Synthesize the spatial impulse response with NLS as binaural
-
+% Synthesize the spatial impulse response with NLS as binaural
 DOA_rad = zeros(size(SRIR_data.DOA));
 
 az_deg = rot(1);
@@ -69,7 +68,6 @@ Right_RIR = Right_RIR(1:N);
 
 SRIR_data.Diff_BRIR = [Left_RIR Right_RIR];
 
-
 Left_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 Right_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 
@@ -84,13 +82,6 @@ Right_RIR = Right_RIR(1:N);
 
 SRIR_data.Spec_BRIR = [Left_RIR Right_RIR];
 
-
-
-
-
 BRIR = SRIR_data.Diff_BRIR + SRIR_data.Spec_BRIR;
 
-
 end
-
-

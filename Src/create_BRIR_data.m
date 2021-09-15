@@ -52,7 +52,7 @@ listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
-        error(['BRIR struct initialization: Unknown parameter ' varargin{i}]);
+        error(['BRIR struct initialization: Unknown parameter ', varargin{i}]);
     end
 end
 
@@ -94,11 +94,11 @@ BRIR_data.DOADirections = 50;
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)
-    j = find(strcmpi(listNames{i},varargin));
+    j = find(strcmpi(listNames{i}, varargin));
     if any(j)
         % All numeric variables can be automatically assigned
         if isnumeric(varargin{j+1}) && numel(varargin{j+1})<=1
-            eval(['BRIR_data.' listNames{i} ' = ' num2str(varargin{j+1}) ';']);
+            eval(['BRIR_data.', listNames{i}, ' = ', num2str(varargin{j+1}), ';']);
         % String variables are assigned one by one
         elseif strcmp(listNames{i},'HRTF_Subject')
             BRIR_data.HRTF_Subject = varargin{j+1};
@@ -116,9 +116,11 @@ for i = 1:length(listNames)
             BRIR_data.ElOrient = varargin{j+1};
         end
     else
-        disp([listNames{i} ' initialized with default values']);
+        disp([listNames{i}, ' initialized with default values']);
     end
 end
 
-[rot_az, rot_el] = meshgrid(BRIR_data.AzOrient,BRIR_data.ElOrient);
-BRIR_data.Directions = [reshape(rot_az,numel(rot_el),1) reshape(rot_el,numel(rot_az),1)];
+[rot_az, rot_el] = meshgrid(BRIR_data.AzOrient, BRIR_data.ElOrient);
+BRIR_data.Directions = [reshape(rot_az, numel(rot_el) ,1), reshape(rot_el, numel(rot_az), 1)];
+
+end

@@ -46,5 +46,4 @@ else
          LS.z(idx(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset)+1:end))];
 end
 
-
-
+end

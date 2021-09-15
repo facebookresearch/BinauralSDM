@@ -10,3 +10,4 @@ function SRIR_data = shift_P_RIR(SRIR_data)
 
 SRIR_data.P_RIR = circshift(SRIR_data.P_RIR, -SRIR_data.OmniMicLag);
 
+end

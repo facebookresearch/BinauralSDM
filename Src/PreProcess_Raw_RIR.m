@@ -20,3 +20,5 @@ if SRIR_data.FilterRaw == 1
     [b,a]=butter(6,[norm_flow norm_fhigh]);  
     SRIR_data.Raw_RIR = filtfilt(b,a,SRIR_data.Raw_RIR);
 end
+
+end

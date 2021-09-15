@@ -15,7 +15,7 @@ function SRIR_data = Analyze_SRIR(SRIR_data, SDM_struct)
 SRIR_data.DOA = SDMPar(SRIR_data.Raw_RIR, SDM_struct);
 
 if SRIR_data.DiffComponent == 1
-    error('This will be implemented in a future release!')  
+    error('This will be implemented in a future release!');
 %     disp('Estimating Diffuse Component'); tic;
 %     SRIR_data.DiffFunc = estimateDiffuseness(SRIR_data);
 %     SRIR_data.DiffFunc = SRIR_data.DiffFunc(SRIR_data.DSonset:end,:);
@@ -26,7 +26,6 @@ if SRIR_data.DiffComponent == 1
 %     timer = toc;
 %     disp(['Done! Time elapsed: ' num2str(timer) 'seconds']);
 end
-
     
 % The Raw RIR and DOA data need to be cropped now, after the DOA and
 % diffuseness estimation. If the first sample in the raw RIR is already 
@@ -41,7 +40,6 @@ if SRIR_data.AlignDOA == 1
     SRIR_data = align_DOA(SRIR_data);
 end
 
-
-
-
 fprintf('\n');
+
+end

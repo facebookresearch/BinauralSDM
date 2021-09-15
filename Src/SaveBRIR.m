@@ -30,4 +30,6 @@ end
 audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '.wav'],early_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
 audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '_DS.wav'],DS_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
 audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '_ER.wav'],ER_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
-audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'late_reverb.wav'],late_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32); 
+audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'late_reverb.wav'],late_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
+
+end

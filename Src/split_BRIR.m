@@ -25,7 +25,6 @@ function [early_BRIR, late_BRIR, DS_BRIR, ER] = split_BRIR(BRIR_TimeData, BRIR_f
 % To-Do:    - More informed method to separate DS and ER, rather than just
 %               windowing after 256 samples
 
-
 % Create a Hann window for the crossfade between ER and Late Reverb.
 hann_window = hann(wlength);
 
@@ -64,3 +63,4 @@ window_ER_noDS = [window_ER_noDS; window_ER(DS_wlength+1:end)];
 % Retrieve early reflections (without direct sound)
 ER = BRIR_TimeData(1:length(window_ER_noDS),:,:).*window_ER_noDS;
 
+end

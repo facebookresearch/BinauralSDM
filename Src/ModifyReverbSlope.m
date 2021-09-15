@@ -30,7 +30,6 @@ if length(BRIR_TimeData) > length(BRIR_Data.FilterBank_g)
         BRIR_Data.fs, BRIR_Data.FilterBank_minFreq , BRIR_Data.FilterBank_maxFreq);
 end
 
-
 numOfBands = length(BRIR_Data.FilterBank_f1);
 EqBRIR = zeros(size(BRIR_TimeData));
 
@@ -51,7 +50,6 @@ d1(isnan(d1)) = 0;
 H_freq = fft(BRIR_TimeData,2*BRIR_Data.FilterBank_snfft);
 G = fft(BRIR_Data.FilterBank_g,2*BRIR_Data.FilterBank_snfft);
 
-
 for band = 1:numOfBands
     % Filter the result with octave band filter
     
@@ -63,8 +61,6 @@ for band = 1:numOfBands
     H_corrected = H_filt.*exp(-(0:BRIR_Data.FilterBank_snfft-1)'/BRIR_Data.fs.*(d1(band)-d0(band))); % changing reverb slope
         
     EqBRIR = EqBRIR + H_corrected;
-    
 end
-
 
 end

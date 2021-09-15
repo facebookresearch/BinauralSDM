@@ -49,3 +49,5 @@ if fs_P ~= fs_Raw || SRIR_data.fs ~= fs_Raw || SRIR_data.fs ~= fs_P
 else
     SRIR_data.fs = fs_P;
 end
+
+end
