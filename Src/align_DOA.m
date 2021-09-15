@@ -26,3 +26,16 @@ el_deg = rad2deg(el_rad);
 % rotation)
 SRIR_data.DOA = (roty(el_deg)*rotz(-az_deg)*SRIR_data.DOA')';
 
+end
+
+function rotmat = roty(beta)
+% Rotation matrix around y-axis
+% reimplemented to be independent of Phased Array System Toolbox
+rotmat = [cosd(beta) 0 sind(beta); 0 1 0; -sind(beta) 0 cosd(beta)];
+end
+
+function rotmat = rotz(gamma)
+% Rotation matrix around z-axis
+% reimplemented to be independent of Phased Array System Toolbox
+rotmat = [cosd(gamma) -sind(gamma) 0; sind(gamma) cosd(gamma) 0; 0 0 1];
+end
