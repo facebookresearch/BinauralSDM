@@ -1,6 +1,6 @@
 # BinauralSDM
 
-Matlab code to generate binaural RIRs for arbitrary head orientations using the Spatial Decomposition Method [1, 2] using the BinauralSDM approach with RTMod+AP equalization from [3].
+Matlab code to generate binaural RIRs for arbitrary head orientations using the Spatial Decomposition Method [[1]](#references), [[2]](#references) using the BinauralSDM approach with RTMod+AP equalization from [[3]](#references).
 
 ## Installation and dependencies
 
@@ -37,7 +37,7 @@ Files for 3D printing of a microphone array holder (FRL Array) are included in `
 
 <img src="./Data/ArrayDesigns/FRLArray_10cmDiameter_pic.jpg" width="200">
 
-Other array geometries can be accommodated by modifying the file `./Src/create_MicGeometry.m`. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [3] for details and justification).
+Other array geometries can be accommodated by modifying the file `./Src/create_MicGeometry.m`. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [[3]](#references) for details and justification).
 
 ## Citing BinauralSDM
 If you use this code in your research, please cite the following [paper](https://www.aes.org/e-lib/browse.cfm?elib=21010):
@@ -57,11 +57,11 @@ If you use this code in your research, please cite the following [paper](https:/
 
 ## References
 
-[1] S. Tervo, J. Patynen, A. Kuusinen, and T. Lokki, “Spatial Decomposition Method for Room Impulse Responses,” J. Audio Eng. Soc., vol. 61, no. 1/2, pp. 17–28 (2013 Jan.).
+[[1]](http://www.aes.org/e-lib/browse.cfm?elib=16664) S. Tervo, J. Patynen, A. Kuusinen, and T. Lokki, “Spatial Decomposition Method for Room Impulse Responses,” J. Audio Eng. Soc., vol. 61, no. 1/2, pp. 17–28 (2013 Jan.).
 
-[2] S. Tervo, J. Patynen, N. Kaplanis, M. Lydolf, S. Bech, and T. Lokki, “Spatial Analysis and Synthesis of Car Audio System and Car Cabin Acoustics With a Compact Microphone Array,” J. Audio Eng. Soc., vol. 63, no. 11, pp. 914–925 (2015 Nov.), https://doi.org/10.17743/jaes.2015.0080.
+[[2]](https://doi.org/10.17743/jaes.2015.0080) S. Tervo, J. Patynen, N. Kaplanis, M. Lydolf, S. Bech, and T. Lokki, “Spatial Analysis and Synthesis of Car Audio System and Car Cabin Acoustics With a Compact Microphone Array,” J. Audio Eng. Soc., vol. 63, no. 11, pp. 914–925 (2015 Nov.), https://doi.org/10.17743/jaes.2015.0080.
 
-[3] S. V. Amengual Gari, J. Arend, P. Calamia, P. Robinson, “Optimizations of the Spatial Decomposition Method for Binaural Reproduction,” J. Audio Eng. Soc., vol. 68, no. 12, pp. 959-976 (2020 Dec.), https://doi.org/10.17743/jaes.2020.0063.
+[[3]](https://doi.org/10.17743/jaes.2020.0063) S. V. Amengual Gari, J. Arend, P. Calamia, P. Robinson, “Optimizations of the Spatial Decomposition Method for Binaural Reproduction,” J. Audio Eng. Soc., vol. 68, no. 12, pp. 959-976 (2020 Dec.), https://doi.org/10.17743/jaes.2020.0063.
 
 ## Contributing
 See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
