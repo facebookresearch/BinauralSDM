@@ -28,7 +28,7 @@
 % - The data is saved in a user defined folder.
 %
 %
-% References:
+% References: 
 % - (Tervo et al. 2013) - "Spatial Decomposition Method for Room Impulse
 % Responses", JAES, 2013.
 % - (SDM Toolbox) - "SDM Toolbox", S. Tervo and J. Patynen, Mathworks
@@ -39,11 +39,16 @@
 % Author: Sebastia Amengual (samengual@fb.com)
 % Last modified: 09/15/2021
 
-% IMPORTANT NOTE: To ensure that relative paths work, navigate to the
-% folder containing this script before executing.
 
 clear; clc;
 
+% set current folder to the one containing this script for relative paths 
+% to work properly
+tmp = matlab.desktop.editor.getActive;
+cd(fileparts(tmp.Filename));
+clear tmp;
+
+% add base folder to path for dependencies to be available
 addpath(genpath('../../'));
 
 %% Analysis parameter initialization
