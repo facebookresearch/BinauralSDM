@@ -100,19 +100,19 @@ for i = 1:length(listNames)
         if isnumeric(varargin{j+1}) && numel(varargin{j+1})<=1
             eval(['BRIR_data.', listNames{i}, ' = ', num2str(varargin{j+1}), ';']);
         % String variables are assigned one by one
-        elseif strcmp(listNames{i},'HRTF_Subject')
+        elseif strcmpi(listNames{i}, 'HRTF_Subject')
             BRIR_data.HRTF_Subject = varargin{j+1};
-        elseif strcmp(listNames{i},'HRTF_Type')
+        elseif strcmpi(listNames{i}, 'HRTF_Type')
             BRIR_data.HRTF_Type = varargin{j+1};
-        elseif strcmp(listNames{i},'HRTF_Path')
+        elseif strcmpi(listNames{i}, 'HRTF_Path')
             BRIR_data.HRTF_Path = varargin{j+1};
-        elseif strcmp(listNames{i},'DestinationPath')
+        elseif strcmpi(listNames{i}, 'DestinationPath')
             BRIR_data.DestinationPath = varargin{j+1};
-        elseif strcmp(listNames{i},'RenderingCondition')
+        elseif strcmpi(listNames{i}, 'RenderingCondition')
             BRIR_data.RenderingCondition = varargin{j+1};
-        elseif strcmp(listNames{i},'AzOrient')
+        elseif strcmpi(listNames{i}, 'AzOrient')
             BRIR_data.AzOrient = varargin{j+1};
-        elseif strcmp(listNames{i},'ElOrient')
+        elseif strcmpi(listNames{i}, 'ElOrient')
             BRIR_data.ElOrient = varargin{j+1};
         end
     else

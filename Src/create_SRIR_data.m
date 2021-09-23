@@ -138,17 +138,17 @@ for i = 1:length(listNames)
         if isnumeric(varargin{j+1}) 
             eval(['SRIR_data.' listNames{i} ' = ' num2str(varargin{j+1}) ';'])
         % String variables are assigned one by one
-        elseif strcmp(listNames{i},'SourcePos')
+        elseif strcmpi(listNames{i}, 'SourcePos')
             SRIR_data.SourcePos = varargin{j+1};
-        elseif strcmp(listNames{i},'ReceiverPos')
+        elseif strcmpi(listNames{i}, 'ReceiverPos')
             SRIR_data.ReceiverPos = varargin{j+1};
-        elseif strcmp(listNames{i},'Room')
+        elseif strcmpi(listNames{i}, 'Room')
             SRIR_data.Room = varargin{j+1};
-        elseif strcmp(listNames{i},'MicArray')
+        elseif strcmpi(listNames{i}, 'MicArray')
             SRIR_data.MicArray = varargin{j+1};
-        elseif strcmp(listNames{i},'Method')
+        elseif strcmpi(listNames{i}, 'Method')
             SRIR_data.Method = varargin{j+1};
-        elseif strcmp(listNames{i},'Database_Path')
+        elseif strcmpi(listNames{i}, 'Database_Path')
             SRIR_data.Database_Path = varargin{j+1};
         end
     else
@@ -161,18 +161,15 @@ SRIR_data.ArrayGeometry = create_MicGeometry(SRIR_data.MicArray);
 
 % Initializing data paths for the arrays
 % Assigning the number of samples that the omnidirectional channel has over
-% the raw signals. This delay will be corrected later in a circular shift during
-% analysis
-switch SRIR_data.MicArray
-    case 'Eigenmike'
-        SRIR_data.OmniMicLag = 25;
-        disp('OmniMicLag set automatically to 25 samples (Eigenmike)');
-    case 'NoArray'
-        error('It seems that you have not selected a microphone array...');
+% the raw signals. This delay will be corrected later in a circular shift
+% during analysis
+if strcmpi(SRIR_data.MicArray, 'EIGENMIKE')
+    SRIR_data.OmniMicLag = 25;
+    disp('OmniMicLag set automatically to 25 samples (Eigenmike).');
 end
 
 SRIR_data = read_RIR(SRIR_data);
-SRIR_data  = PreProcess_P_RIR(SRIR_data);
+SRIR_data = PreProcess_P_RIR(SRIR_data);
 SRIR_data = PreProcess_Raw_RIR(SRIR_data);
 
 end

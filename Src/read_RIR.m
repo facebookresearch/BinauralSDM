@@ -9,39 +9,47 @@ function SRIR_data = read_RIR(SRIR_data)
 % Author: Sebastià V. Amengual
 % Last modified: 12/19/18
 
-switch SRIR_data.MicArray
-    case 'Eigenmike'
+switch upper(SRIR_data.MicArray)
+    case 'EIGENMIKE'
         SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_HOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_4HOA_N3D.wav'];
         SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'Raw32channels' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_Raw32channels.wav'];
         [SRIR_data.P_RIR, fs_P] = audioread(SRIR_data.P_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.P_RIR(:,1);
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
-    case 'Tetramic'
-        switch SRIR_data.fs
-            case 48e3
-                SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D.wav'];
-                SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic48.wav'];             
-            case 192e3
-                SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D192.wav'];
-                SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic192.wav'];              
+        
+    case 'TETRAMIC'
+        if SRIR_data.fs == 48e3
+            SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D.wav'];
+            SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic48.wav'];             
+        
+        elseif SRIR_data.fs == 192e3
+            SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D192.wav'];
+            SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic192.wav'];              
+        
+        else
+            error('Unhandled case for sampling frequncy of %f Hz.', SRIR_data.fs);
         end
+        
         [SRIR_data.P_RIR, fs_P] = audioread(SRIR_data.P_RIR_Path);
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.P_RIR(:,1);
-    case 'FRL_5cm'
+        
+    case 'FRL_5CM'
         SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'FRL_array' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FRL5cm.wav'];        
         SRIR_data.Raw_RIR_Path = SRIR_data.P_RIR_Path;
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.Raw_RIR(:,7);
         fs_P = fs_Raw;
-    case 'FRL_10cm'
+        
+    case 'FRL_10CM'
         SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'FRL_array' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FRL10cm.wav'];        
         SRIR_data.Raw_RIR_Path = SRIR_data.P_RIR_Path;
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.Raw_RIR(:,7);
         fs_P = fs_Raw;
-    case 'NoArray'
-        error('It seems that you have not selected a microphone array...');
+        
+    otherwise
+        error('Invalid microhone array type "%s".', SRIR_data.MicArray);
 end
 
 if fs_P ~= fs_Raw || SRIR_data.fs ~= fs_Raw || SRIR_data.fs ~= fs_P

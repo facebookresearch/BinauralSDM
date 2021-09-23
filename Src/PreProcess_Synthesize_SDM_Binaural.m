@@ -4,29 +4,38 @@ function [SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = PreProces
 
 [DOA_rad(:,1), DOA_rad(:,2), DOA_rad(:,3)] = cart2sph(SRIR_data.DOA(:,1), SRIR_data.DOA(:,2), SRIR_data.DOA(:,3));
 
-if strcmp(BRIR_data.HRTF_Type,'FRL_HRTF')
-    % Restrict the HRTF directions to az=-180:180 degrees, el=-90:90 degrees
-    HRTF_data.directions(HRTF_data.directions(:,1)>pi,1) = HRTF_data.directions(HRTF_data.directions(:,1)>pi,1) - 2*pi;
+switch upper(BRIR_data.HRTF_Type)
+    case 'FRL_HRTF'
+        % Restrict the HRTF directions to az=-180:180 degrees, el=-90:90 degrees
+        HRTF_data.directions(HRTF_data.directions(:,1)>pi,1) = ...
+            HRTF_data.directions(HRTF_data.directions(:,1)>pi,1) - 2*pi;
 
-    HRTF_TransL = HRTF_data.left_HRTF';
-    HRTF_TransR = HRTF_data.right_HRTF';
+        HRTF_TransL = HRTF_data.left_HRTF';
+        HRTF_TransR = HRTF_data.right_HRTF';
 
-    [BRIR_data.HRTF_cartDir(:,1), BRIR_data.HRTF_cartDir(:,2), BRIR_data.HRTF_cartDir(:,3)] = ...
-        sph2cart(HRTF_data.directions(:,1), HRTF_data.directions(:,2), HRTF_data.directions(:,3));
+        [BRIR_data.HRTF_cartDir(:,1), BRIR_data.HRTF_cartDir(:,2), ...
+            BRIR_data.HRTF_cartDir(:,3)] = sph2cart(HRTF_data.directions(:,1), ...
+            HRTF_data.directions(:,2), HRTF_data.directions(:,3));
 
-    BRIR_data.HRTF_cartDirNSTree = createns(BRIR_data.HRTF_cartDir);
-elseif strcmp(BRIR_data.HRTF_Type,'SOFA')
-    % Restrict the HRTF directions to az=-180:180 degrees, el=-90:90 degrees
-    HRTF_data.SourcePosition(HRTF_data.SourcePosition(:,1)>pi,1) = HRTF_data.SourcePosition(HRTF_data.SourcePosition(:,1)>pi,1) - 2*pi;  
+        BRIR_data.HRTF_cartDirNSTree = createns(BRIR_data.HRTF_cartDir);
     
-    TempSourcePosition(:,1) = deg2rad(HRTF_data.SourcePosition(:,1));
-    TempSourcePosition(:,2) = deg2rad(HRTF_data.SourcePosition(:,2));
+    case 'SOFA'
+        % Restrict the HRTF directions to az=-180:180 degrees, el=-90:90 degrees
+        HRTF_data.SourcePosition(HRTF_data.SourcePosition(:,1)>pi,1) = ...
+            HRTF_data.SourcePosition(HRTF_data.SourcePosition(:,1)>pi,1) - 2*pi;  
 
-    [BRIR_data.HRTF_cartDir(:,1), BRIR_data.HRTF_cartDir(:,2), BRIR_data.HRTF_cartDir(:,3)] = ...
-        sph2cart(TempSourcePosition(:,1), TempSourcePosition(:,2), HRTF_data.SourcePosition(:,3));    
-        
-    HRTF_TransL = squeeze(HRTF_data.Data.IR(:,1,:))';
-    HRTF_TransR = squeeze(HRTF_data.Data.IR(:,2,:))';   
+        TempSourcePosition(:,1) = deg2rad(HRTF_data.SourcePosition(:,1));
+        TempSourcePosition(:,2) = deg2rad(HRTF_data.SourcePosition(:,2));
+
+        [BRIR_data.HRTF_cartDir(:,1), BRIR_data.HRTF_cartDir(:,2), ...
+            BRIR_data.HRTF_cartDir(:,3)] = sph2cart(TempSourcePosition(:,1), ...
+            TempSourcePosition(:,2), HRTF_data.SourcePosition(:,3));    
+
+        HRTF_TransL = squeeze(HRTF_data.Data.IR(:,1,:))';
+        HRTF_TransR = squeeze(HRTF_data.Data.IR(:,2,:))';
+    
+    otherwise
+        error('Invalid HRIR format "%s".', BRIR_data.HRTF_Type);
 end
 
 az = DOA_rad(:,1);
