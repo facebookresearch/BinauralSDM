@@ -14,15 +14,15 @@ The following dependencies are necessary for the repository to run successfully.
 
 - `parfor_progressbar.m` (included) - by Daniel Terry.
 
-- `Denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
+- `denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
 
-- [Matlab Curve Fitting Toolbox](https://www.mathworks.com/products/curvefitting.html)
+- [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) - by Mathworks.
 
-- [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html)
+- [Matlab Statistics and Machine Learning Toolbox](https://www.mathworks.com/products/statistics.html) - by Mathworks.
 
-- [Matlab Statistics and Machine Learning Toolbox](https://www.mathworks.com/products/statistics.html)
+- [Matlab Curve Fitting Toolbox](https://www.mathworks.com/products/curvefitting.html) (for `denoise_RIR.m`) - by Mathworks.
 
-- [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (may be skipped with minor code modifications)
+- [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (may be skipped with minor code modifications) - by Mathworks.
 
 ## Demos
 

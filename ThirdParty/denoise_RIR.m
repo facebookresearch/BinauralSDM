@@ -89,7 +89,7 @@ else
 end
 
 if ~isempty(RIR) && ~isempty(fs) && ~isempty(hiF) && ~isempty(loF) && ~isempty(doplot)
-    try
+%     try
         if hiF > fs/2
             disp('High octave filter frequency is too high!')
             OUT = [];
@@ -117,7 +117,7 @@ if ~isempty(RIR) && ~isempty(fs) && ~isempty(hiF) && ~isempty(loF) && ~isempty(d
         nominalfreq(nominalfreq==7943) = 8000;
         nominalfreq(nominalfreq==15849) = 16000;
         nominalfreq(nominalfreq>31.5) = round(nominalfreq(nominalfreq>31.5));
-        disp(['Frequency      (Hz) ', num2str(nominalfreq)])
+%         disp(['Frequency      (Hz) ', num2str(nominalfreq)])
 
         % GENERATE FILTERS
         order = 4; % this effective filter order will be twice this due to filtfilt()
@@ -254,10 +254,10 @@ if ~isempty(RIR) && ~isempty(fs) && ~isempty(hiF) && ~isempty(loF) && ~isempty(d
         else
             OUT = y;
         end
-    catch %sthgwrong
-        OUT = [];
-        warndlg('The input might be denoised already. Verify the audio input.','AARAE info')
-    end
+%     catch %sthgwrong
+%         OUT = [];
+%         warndlg('The input might be denoised already. Verify the audio input.','AARAE info')
+%     end
 else
     OUT = [];
 end
