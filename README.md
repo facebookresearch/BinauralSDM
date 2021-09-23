@@ -10,11 +10,11 @@ The following dependencies are necessary for the repository to run successfully.
 
 - [SOFA API for Matlab](https://github.com/sofacoustics/API_MO) (must be downloaded manually) - by the SOFA conventions team.
 
-- `GetLebedevGrid.m` (included) - by Robert Parrish.
+- [`getLebedevSphere.m`](ThirdParty/getLebedevSphere.m) (included) - by Robert Parrish.
 
-- `parfor_progressbar.m` (included) - by Daniel Terry.
+- [`parfor_progressbar.m`](ThirdParty/parfor_progressbar.m) (included) - by Daniel Terry.
 
-- `denoise_RIR.m` (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
+- [`denoise_RIR.m`](ThirdParty/denoise_RIR.m) (included) - by Densil Cabrera and Daniel Ricardo Jimenez Pinilla.
 
 - [Matlab Signal Processing Toolbox](https://www.mathworks.com/products/signal.html) - by Mathworks.
 
