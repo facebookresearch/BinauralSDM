@@ -12,7 +12,7 @@ function SRIR_data = PreProcess_P_RIR(SRIR_data)
 % Last modified: 4/19/19
 
 % Denoising Pressure RIR
-if SRIR_data.Denoise == 1
+if SRIR_data.Denoise
     try
         SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
             SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);

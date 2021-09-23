@@ -14,7 +14,7 @@ function SRIR_data = Analyze_SRIR(SRIR_data, SDM_struct)
 % Computing DOA
 SRIR_data.DOA = SDMPar(SRIR_data.Raw_RIR, SDM_struct);
 
-if SRIR_data.DiffComponent == 1
+if SRIR_data.DiffComponent
     error('This will be implemented in a future release!');
 %     disp('Estimating Diffuse Component'); tic;
 %     SRIR_data.DiffFunc = estimateDiffuseness(SRIR_data);
@@ -29,14 +29,14 @@ end
     
 % The Raw RIR and DOA data need to be cropped now, after the DOA and
 % diffuseness estimation. If the first sample in the raw RIR is already 
-% the direct  sound, the DOA estimation is wrong - it does not find a 
+% the direct sound, the DOA estimation is wrong - it does not find a 
 % solution and returns 0º,0º.
 SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(SRIR_data.DSonset:end,:);
 SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end,:);
 
 SRIR_data = Smooth_DOA(SRIR_data);
 
-if SRIR_data.AlignDOA == 1
+if SRIR_data.AlignDOA
     SRIR_data = align_DOA(SRIR_data);
 end
 

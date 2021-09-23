@@ -3,7 +3,7 @@
 function SRIR_data = read_RIR(SRIR_data)
 % This function reads RIRs from the specified location.
 %
-% It currently supports databases for the Eigenmike, Tetramic (48kHz and
+% It currently supports databases for the Eigenmike, Tetramic (48 kHz and
 % 192 kHz), and FRL room acoustics array.
 %
 % Author: Sebastià V. Amengual

@@ -1,23 +1,24 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
-function BRIR = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, rot, full)
+function BRIR = Synthesize_SDM_Binaural(...
+    SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, rot, full)
 % This function re-synthesizes a binaural room impulse response (BRIR)
 % using the Spatial Decomposition Method (SDM) and an arbitrary HRTF
 % dataset. 
 %
 % Input arguments:
-%       - SRIR_data: Structure created using the function
-%       create_SRIR_data.m, containing at least a pressure RIR and a DOA
-%       vector.
+%       - SRIR_data: Structure created using the function 
+%         create_SRIR_data.m, containing at least a pressure RIR and a DOA
+%         vector.
 %       - BRIR_data: Structure created using create_BRIR_data.m, containing
-%       information regarding the rendering parameters of the resynthesized
-%       BRIR.
-%       - HRTF_TransL: Left HRIR, row vector [N 1]
-%       - HRTF_TransR: Right HRIR, row vector [N 1]
+%         information regarding the rendering parameters of the 
+%         resynthesized BRIR.
+%       - HRTF_TransL: Left HRIR, row vector [N 1].
+%       - HRTF_TransR: Right HRIR, row vector [N 1].
 %       - rot: Rotation of the synthesized BRIR, in the format [az el]
-%       (in degrees) 
-%       - full: Flag that marks if the entire BRIR should be rendered (1) or
-%       only until the mixing time (0). 
+%         (in degrees).
+%       - full: Flag that marks if the entire BRIR should be rendered
+%         (true) or only until the mixing time (false).
 %
 % Output arguments:
 %       - BRIR: Re-synthesized binaural room impulse response
@@ -49,9 +50,7 @@ end
 
 [idx, ~] = knnsearch(BRIR_data.HRTF_cartDir, DOA_cart(1:N,:));
 
-if SRIR_data.DiffComponent == 0
-    P_IR = SRIR_data.P_RIR;
-else
+if SRIR_data.DiffComponent
     P_IR = SRIR_data.SpecRIR;
     
     % Spatializing diffuse streams
@@ -61,6 +60,8 @@ else
         Left_RIR = Left_RIR + conv(SRIR_data.DiffRIR(:,diff_i), HRTF_TransL(:,idxDiff(diff_i)));
         Right_RIR = Right_RIR + conv(SRIR_data.DiffRIR(:,diff_i), HRTF_TransR(:,idxDiff(diff_i)));
     end
+else
+    P_IR = SRIR_data.P_RIR;
 end
 
 Left_RIR = Left_RIR(1:N);
@@ -72,8 +73,10 @@ Left_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 Right_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 
 for samp_n=1:length(SRIR_data.P_RIR(1:N))
-    Left_RIR(samp_n:samp_n+L_HRTF-1) = Left_RIR(samp_n:samp_n+L_HRTF-1) + P_IR(samp_n).*HRTF_TransL(:,idx(samp_n));
-    Right_RIR(samp_n:samp_n+L_HRTF-1) = Right_RIR(samp_n:samp_n+L_HRTF-1) + P_IR(samp_n).*HRTF_TransR(:,idx(samp_n));  
+    Left_RIR(samp_n:samp_n+L_HRTF-1) = Left_RIR(samp_n:samp_n+L_HRTF-1) ...
+        + P_IR(samp_n).*HRTF_TransL(:,idx(samp_n));
+    Right_RIR(samp_n:samp_n+L_HRTF-1) = Right_RIR(samp_n:samp_n+L_HRTF-1) ...
+        + P_IR(samp_n).*HRTF_TransR(:,idx(samp_n));  
 end
 hold on
 

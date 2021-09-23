@@ -3,35 +3,37 @@
 function BRIR_data = create_BRIR_data (varargin)
 %
 %       Input parameters:
-%       - fs: Sampling rate - integer - default: 48e3
+%       - fs: Sampling rate - integer - default: 48e3.
 %       - HRTF_Subject: Name/ID of the subject's HRTF used for re-synthesis
-%               - string - default: 'KEMAR'
-%       - HRTF_Type: Format of HRTF for re-synthesis string - default 
-%               'SOFA'. Other options: 'FRL_HRTF'
-%       - HRTF_Path: File name of the HRTF used for re-synthesis -
-%               string - default: '../../Data/HRIRs/KU100_HRIR_FULL2DEG_Koeln.sofa'.
+%               - string - default: 'KEMAR'.
+%       - HRTF_Type: Format of HRTF for re-synthesis - string - 
+%               default: 'SOFA', other options: 'FRL_HRTF'.
+%       - HRTF_Path: File name of the HRTF used for re-synthesis - string -
+%               default: '../../Data/HRIRs/KU100_HRIR_FULL2DEG_Koeln.sofa'.
 %       - BRIR_DestinationPath: Path to the BRIR database for saving -
-%       string - default: '../../Data/Rendered_BRIRs/'.
-%       - Length: Desired length of RIR in seconds - float - default: 1.
+%               string - default: '../../Data/Rendered_BRIRs/'.
+%       - Length: Desired length of RIR in seconds - float - default: 1.0.
 %       - MixingTime: Start of late reverb (in seconds) - float - 
 %               default: 0.08.
 %       - AzOrient: Vector with the azimuth angles to render [N x 1] -
-%       float - default: (-180:1:180)'.
+%               float - default: (-180:1:180)'.
 %       - ElOrient: Vector with the azimuth angles to render [N x 1] -
-%       float - default: (-90:5:90)'.
+%               float - default: (-90:5:90)'.
 %       - Attenuation: Attenuation factor on the rendered BRIR (in dB) -
-%       float - default: 0.
-%       - TimeGuard: Time (in seconds) greater than the propagation time 
-%       in the impulse response. It is needed to make sure that the early
-%       reflections are synthesized up to the mixing time correctly. - 
-%       default: 0.01.
-%       - RenderingCondition: Optional string to describe some rendering
-%       options. This will create a folder in which renderings are saved 
-%       and is only used for naming purposes during saving.
+%               float - default: 0.0.
+%       - TimeGuard: Time (in seconds) greater than the propagation time in
+%               the impulse response. It is needed to make sure that the 
+%               early reflections are synthesized up to the mixing time 
+%               correctly - float - default: 0.01.
+%       - RenderingCondition: Describe some rendering options. This will 
+%               create a folder in which renderings are saved and is only
+%               used for naming purposes during saving - string - 
+%               default: 'Original'.
 %       - QuantizeDOAFlag: Flag to indicate whether DOA information must me
-%       quantized. - default: 0.
-%       - DOADirections: Number of directions to quantize DOA information.
-%       This is only relevant if QuantizeDOAFlag == 1 - default: 50. 
+%               quantized - boolean - default: false.
+%       - DOADirections: Number of directions to quantize DOA information,
+%               which is only relevant if QuantizeDOAFlag is set - integer
+%               - default: 50. 
 %
 
 % Author: Sebastia V. Amengual (samengual@fb.com)
@@ -39,10 +41,10 @@ function BRIR_data = create_BRIR_data (varargin)
 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
-%   available it could be used to implement spectral equalization.
+%     available it could be used to implement spectral equalization.
 %   - Split (unused): Flag to indicate whether the rendered BRIR should be
-%   splitted into DS, ER and LR when saving. - integer (0 or 1). Default: 1.
-%   In subsequent versions this might be updated to customize saving.
+%     split into DS, ER and LR when saving - boolean - default: true.
+%     In subsequent versions this might be updated to customize saving.
 
 
 % Check input arguments
@@ -79,17 +81,17 @@ BRIR_data.AzOrient = (-180:1:180)';
 BRIR_data.ElOrient = (-90:5:90)';
 
 BRIR_data.MixingTime = 0.08;
-BRIR_data.Split = 1;
-BRIR_data.Length = 1;
+BRIR_data.Split = true;
+BRIR_data.Length = 1.0;
 BRIR_data.TimeGuard = 0.01;
 
-BRIR_data.Attenuation = 0;
+BRIR_data.Attenuation = 0.0;
 
 BRIR_data.RenderingCondition = 'Original';
 
 BRIR_data.FilterBank_bandsperoctave = 3;
 
-BRIR_data.QuantizeDOAFlag = 0;
+BRIR_data.QuantizeDOAFlag = false;
 BRIR_data.DOADirections = 50;
 
 % Apply input arguments on BRIR_data struct

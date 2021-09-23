@@ -62,12 +62,12 @@ MixingTime      = 0.08;                 % Mixing time (in seconds) of the room f
 DOASmooth       = 16;                   % Window length (in samples) for smoothing of DOA information. 16 samples is a good compromise for noise 
                                         % reduction and time resolution.
 BRIRLength      = 0.7;                  % Duration of the rendered BRIRs (in seconds)
-DenoiseFlag     = 1;                    % Flag to perform noise floor compensation on the multichannel RIR. This ensures that the RIR decays 
+DenoiseFlag     = true;                 % Flag to perform noise floor compensation on the multichannel RIR. If set, it ensures that the RIR decays 
                                         % progressively and removes rendering artifacts due to high noise floor in the RIR.
-FilterRawFlag   = 1;                    % Flag to perform band pass filtering on the multichannel RIR prior to DOA estimation. If active, only
-                                        % information between 200Hz and 8kHz (by default) will be used for DOA estimation. This helps increasing 
+FilterRawFlag   = true;                 % Flag to perform band pass filtering on the multichannel RIR prior to DOA estimation. If set, only
+                                        % information between 200 Hz and 8 kHz (by default) will be used for DOA estimation. This helps increasing 
                                         % robustness of the estimation. See create_BRIR_data.m for customization of the filtering.
-AlignDOA        = 1;                    % If this flag is set to 1, the DOA data will be rotated so the direct sound is aligned to 0,0 (az, el).
+AlignDOAFlag    = true;                 % If this flag is set, the DOA data will be rotated so the direct sound is aligned to 0,0 (az, el).
 SpeedSound      = 345;                  % Speed of sound in m/s (for SDM Toolbox DOA analysis)
 WinLen          = 62;                   % Window Length (in samples) for SDM DOA analysis. For fs = 48kHz, sizes between 36 and 64 seem appropriate. 
                                         % The optimal size might be room dependent. See Tervo et al. 2013 and Amengual et al. 2020 for a discussion.
@@ -84,7 +84,7 @@ SRIR_data = create_SRIR_data('MicArray', MicArray,...
                              'Length',BRIRLength,...
                              'Denoise',DenoiseFlag,...
                              'FilterRaw',FilterRawFlag,...
-                             'AlignDOA',AlignDOA);
+                             'AlignDOA',AlignDOAFlag);
 
 % Initialize SDM analysis struct (from SDM Toolbox)
 SDM_Struct = createSDMStruct('c',SpeedSound,...
@@ -113,7 +113,7 @@ else
 end
 
 %% Rendering parameters
-QuantizeDOAFlag = 1;                % Flag to determine if DOA information must me quantized.
+QuantizeDOAFlag = true;             % Flag to determine if DOA information must me quantized.
 DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid
 NamingCond      = sprintf('Quantized%dDOA', DOADirections); % String used for naming purposes, useful when rendering variations of the same RIR.
 BRIRAtten       = 30;               % Attenuation of the rendered BRIRs (in dB). Useful to avoid clipping. Use the same value when rendering various
@@ -156,7 +156,7 @@ SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
 % -----------------------------------------------------------------------
 % 2. Quantize DOA information, if required
 
-if BRIR_data.QuantizeDOAFlag == 1
+if BRIR_data.QuantizeDOAFlag
     [SRIR_data, idx] = QuantizeDOA(SRIR_data, BRIR_data.DOADirections, 128);
 end
 
