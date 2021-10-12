@@ -201,6 +201,7 @@ parfor iDir = 1:nDirs
     BRIR_Early(:,:,iDir) = BRIR_TimeDataTemp;
 end
 close(hbar);
+clear iDir hbar;
 
 % Render late reverb
 BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], 1);
@@ -222,22 +223,24 @@ BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, OriginalT30, DesiredT30, RTF
 allpass_delays = [37, 113, 215, 347]; % in samples
 allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
 
-for iAllPass=1:3
+for iAllPass = 1:3
     late_BRIR(:,1) = allpass_filter(late_BRIR(:,1), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
     late_BRIR(:,2) = allpass_filter(late_BRIR(:,2), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
-end
+end; clear iAllPass;
 
 % -----------------------------------------------------------------------
 % 6. Save BRIRs
 
-hbar = parfor_progressbar(nDirs, 'Please wait, saving (step 2/2) ...');
+hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
 parfor iDir = 1:nDirs
     hbar.iterate();
     SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ...
         ER_BRIR(:,:,iDir), late_BRIR, BRIR_data.Directions(iDir,:));
 end
+hbar.iterate();
 SaveRenderingStructs(SRIR_data, BRIR_data);
 close(hbar);
+clear iDir hbar;
 
 %%
 time_exec = toc(time_start);
