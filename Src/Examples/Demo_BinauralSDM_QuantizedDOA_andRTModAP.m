@@ -232,15 +232,20 @@ end; clear iAllPass;
 % 6. Save BRIRs
 
 hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
-parfor iDir = 1:nDirs
+for iDir = 1:nDirs
     hbar.iterate();
+    if iDir == 1 % export identical late reverberation only once
+        late_BRIR_export = late_BRIR;
+    else
+        late_BRIR_export = [];
+    end
     SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ...
-        ER_BRIR(:,:,iDir), late_BRIR, BRIR_data.Directions(iDir,:));
+        ER_BRIR(:,:,iDir), late_BRIR_export, BRIR_data.Directions(iDir,:));
 end
 hbar.iterate();
 SaveRenderingStructs(SRIR_data, BRIR_data);
 close(hbar);
-clear iDir hbar;
+clear iDir hbar late_BRIR_export;
 
 %%
 time_exec = toc(time_start);
