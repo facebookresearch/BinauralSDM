@@ -37,7 +37,7 @@
 % Method for Binaural Reproduction", JAES 2020.
 
 % Author: Sebastia Amengual (samengual@fb.com)
-% Last modified: 09/15/2021
+% Last modified: 10/12/2021
 
 
 clear; clc;
@@ -52,7 +52,7 @@ clear tmp;
 addpath(genpath('../../'));
 
 %% Analysis parameter initialization
-tic; % start measuring execution time
+time_start = tic; % start measuring execution time
 
 % Analysis parameters
 MicArray        = 'FRL_10cm';           % FRL Array is 7 mics, 10cm diameter, with central sensor. Supported geometries are FRL_10cm, FRL_5cm, 
@@ -203,7 +203,7 @@ end
 close(hbar);
 
 % Render late reverb
-BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0 0],1);
+BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], 1);
 BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, OriginalT30, DesiredT30, RTFreqVector);
 
 % Remove leading zeros
@@ -211,7 +211,7 @@ BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, OriginalT30, DesiredT30, RTF
     BRIR_Early, BRIR_full, -20, BRIR_data.MixingTime * BRIR_data.fs);
 
 % Split the BRIR
-[early_BRIR, late_BRIR, DS_BRIR, ER_BRIR]  = split_BRIR(...
+[early_BRIR, late_BRIR, DS_BRIR, ER_BRIR] = split_BRIR(...
     BRIR_Early, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
 
 % -----------------------------------------------------------------------
@@ -223,8 +223,8 @@ allpass_delays = [37, 113, 215, 347]; % in samples
 allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
 
 for iAllPass=1:3
-    late_BRIR(:,1) = allpass_filter(late_BRIR(:,1), allpass_delays(iAllPass), 0.1, 48e3);
-    late_BRIR(:,2) = allpass_filter(late_BRIR(:,2), allpass_delays(iAllPass), 0.1, 48e3);
+    late_BRIR(:,1) = allpass_filter(late_BRIR(:,1), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
+    late_BRIR(:,2) = allpass_filter(late_BRIR(:,2), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
 end
 
 % -----------------------------------------------------------------------
@@ -234,10 +234,12 @@ hbar = parfor_progressbar(nDirs, 'Please wait, saving (step 2/2) ...');
 parfor iDir = 1:nDirs
     hbar.iterate();
     SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ...
-        ER_BRIR(:,:,iDir), late_BRIR,BRIR_data.Directions(iDir,:));
+        ER_BRIR(:,:,iDir), late_BRIR, BRIR_data.Directions(iDir,:));
 end
 SaveRenderingStructs(SRIR_data, BRIR_data);
 close(hbar);
 
 %%
-fprintf('\n... completed in %.0fh %.0fm %.0fs.\n',toc/60/60,toc/60,mod(toc,60));
+time_exec = toc(time_start);
+fprintf('\n... completed in %.0fh %.0fm %.0fs.\n', ...
+    time_exec/60/60, time_exec/60, mod(time_exec, 60));
