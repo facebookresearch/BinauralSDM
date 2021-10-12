@@ -52,10 +52,15 @@ switch upper(SRIR_data.MicArray)
         error('Invalid microhone array type "%s".', SRIR_data.MicArray);
 end
 
-if fs_P ~= fs_Raw || SRIR_data.fs ~= fs_Raw || SRIR_data.fs ~= fs_P
-    error('Your sampling rates do not match! Check your SRIR struct or RIRs!');
-else
-    SRIR_data.fs = fs_P;
+if SRIR_data.fs ~= fs_Raw
+    warning('Resampling raw microphone signals from %.1f kHz to %.1f kHz.', ...
+        fs_Raw/1e3, SRIR_data.fs/1e3);
+    SRIR_data.Raw_RIR2 = resample(SRIR_data.Raw_RIR, SRIR_data.fs, fs_Raw);
+end
+if SRIR_data.fs ~= fs_P
+    warning('Resampling pressure microphone signal from %.1f kHz to %.1f kHz.', ...
+        fs_P/1e3, SRIR_data.fs/1e3);
+    SRIR_data.P_RIR2 = resample(SRIR_data.P_RIR, SRIR_data.fs, fs_P);
 end
 
 end
