@@ -1,6 +1,6 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
-function SaveBRIR(SRIR_data, BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR,ang)
+function SaveBRIR(SRIR_data, BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR, ang)
 % This function saves the BRIR dataset generated from the re-synthesis
 % through SDM. 
 % Input arguments:
@@ -13,23 +13,29 @@ function SaveBRIR(SRIR_data, BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR,
 %   - late_BRIR: Angle independent late reverb tail.
 %
 %   Author: Sebastià V. Amengual
-%   Last modified: 4/22/19
+%   Last modified: 10/12/21
 
-Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos];
+Save_Path = fullfile(BRIR_data.DestinationPath, ...
+    strrep(BRIR_data.HRTF_Subject, ' ', '_'), ...
+    sprintf('%s_%s_%s', SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos), ...
+    BRIR_data.RenderingCondition);
 
-if ~exist([Save_Path filesep BRIR_data.RenderingCondition filesep], 'dir')
-    mkdir([Save_Path filesep BRIR_data.RenderingCondition filesep]);
-end
+% create output directory (ignore if it already exists)
+[~, ~] = mkdir(Save_Path);
 
 attenuation = db2mag(BRIR_data.Attenuation);
-
-if max(max(abs(DS_BRIR)))/attenuation>1
-    error(['The exported BRIRs are clipping! - The max value is' num2str(max(abs(DS_BRIR))/attenuation)]);
+max_value = max(max(abs(DS_BRIR)))/attenuation;
+if max_value > 1
+    error('The exported BRIRs are clipping! - The max value is %f.', max_value);
 end
 
-audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '.wav'],early_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
-audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '_DS.wav'],DS_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
-audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'az' num2str(ang(1)) 'el' num2str(ang(2)) '_ER.wav'],ER_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
-audiowrite([Save_Path filesep BRIR_data.RenderingCondition filesep 'late_reverb.wav'],late_BRIR./attenuation,BRIR_data.fs,'BitsPerSample',32);
+audiowrite(fullfile(Save_Path, sprintf('az%del%d.wav', ang(1), ang(2))), ...
+    early_BRIR./attenuation, BRIR_data.fs, 'BitsPerSample', 32);
+audiowrite(fullfile(Save_Path, sprintf('az%del%d_DS.wav', ang(1), ang(2))), ...
+    DS_BRIR./attenuation, BRIR_data.fs, 'BitsPerSample', 32);
+audiowrite(fullfile(Save_Path, sprintf('az%del%d_ER.wav', ang(1), ang(2))), ...
+    ER_BRIR./attenuation, BRIR_data.fs, 'BitsPerSample', 32);
+audiowrite(fullfile(Save_Path, 'late_reverb.wav'), ...
+    late_BRIR./attenuation, BRIR_data.fs, 'BitsPerSample', 32);
 
 end
