@@ -55,12 +55,12 @@ end
 if SRIR_data.fs ~= fs_Raw
     warning('Resampling raw microphone signals from %.1f kHz to %.1f kHz.', ...
         fs_Raw/1e3, SRIR_data.fs/1e3);
-    SRIR_data.Raw_RIR2 = resample(SRIR_data.Raw_RIR, SRIR_data.fs, fs_Raw);
+    SRIR_data.Raw_RIR = resample(SRIR_data.Raw_RIR, SRIR_data.fs, fs_Raw);
 end
 if SRIR_data.fs ~= fs_P
     warning('Resampling pressure microphone signal from %.1f kHz to %.1f kHz.', ...
         fs_P/1e3, SRIR_data.fs/1e3);
-    SRIR_data.P_RIR2 = resample(SRIR_data.P_RIR, SRIR_data.fs, fs_P);
+    SRIR_data.P_RIR = resample(SRIR_data.P_RIR, SRIR_data.fs, fs_P);
 end
 
 end
