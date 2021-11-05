@@ -58,7 +58,7 @@ function SRIR_data = create_SRIR_data(varargin)
 %               '../../Data/RIRs/'.
 %
 % Author: Sebastià V. Amengual (samengual@fb.com)
-% Last Modified: 1/6/20
+% Last Modified: 11/05/2021
 %
 %
 % TO-DO
@@ -134,25 +134,10 @@ SRIR_data.DSonsetThreshold = 0.02;
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)
-    j = find(strcmpi(listNames{i},varargin));
-    if any(j)
-        % All numeric variables can be automatically assigned
-        if isnumeric(varargin{j+1}) 
-            eval(['SRIR_data.' listNames{i} ' = ' num2str(varargin{j+1}) ';'])
-        % String variables are assigned one by one
-        elseif strcmpi(listNames{i}, 'SourcePos')
-            SRIR_data.SourcePos = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'ReceiverPos')
-            SRIR_data.ReceiverPos = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'Room')
-            SRIR_data.Room = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'MicArray')
-            SRIR_data.MicArray = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'Method')
-            SRIR_data.Method = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'Database_Path')
-            SRIR_data.Database_Path = varargin{j+1};
-        end
+    argin_index = find(strcmpi(listNames{i}, varargin));
+    if argin_index
+        % assign variable from submitted attribute-value-pairs
+        SRIR_data.(listNames{i}) = varargin{argin_index+1};
     else
         disp([listNames{i} ' initialized with default values']);
     end

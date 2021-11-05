@@ -38,6 +38,7 @@ function BRIR_data = create_BRIR_data (varargin)
 
 % Author: Sebastia V. Amengual (samengual@fb.com)
 % Last modified: 04/30/2019
+% Last modified: 11/05/2021
 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
@@ -96,27 +97,10 @@ BRIR_data.DOADirections = 50;
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)
-    j = find(strcmpi(listNames{i}, varargin));
-    if any(j)
-        % All numeric variables can be automatically assigned
-        if isnumeric(varargin{j+1}) && numel(varargin{j+1})<=1
-            eval(['BRIR_data.', listNames{i}, ' = ', num2str(varargin{j+1}), ';']);
-        % String variables are assigned one by one
-        elseif strcmpi(listNames{i}, 'HRTF_Subject')
-            BRIR_data.HRTF_Subject = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'HRTF_Type')
-            BRIR_data.HRTF_Type = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'HRTF_Path')
-            BRIR_data.HRTF_Path = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'DestinationPath')
-            BRIR_data.DestinationPath = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'RenderingCondition')
-            BRIR_data.RenderingCondition = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'AzOrient')
-            BRIR_data.AzOrient = varargin{j+1};
-        elseif strcmpi(listNames{i}, 'ElOrient')
-            BRIR_data.ElOrient = varargin{j+1};
-        end
+    argin_index = find(strcmpi(listNames{i}, varargin));
+    if argin_index
+        % assign variable from submitted attribute-value-pairs
+        BRIR_data.(listNames{i}) = varargin{argin_index+1};
     else
         disp([listNames{i}, ' initialized with default values']);
     end
