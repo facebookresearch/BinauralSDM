@@ -36,7 +36,6 @@ DOA_cart = (rotz(az_deg)*roty(-el_deg)*SRIR_data.DOA')';
 [DOA_rad(:,1), DOA_rad(:,2), DOA_rad(:,3)] = cart2sph(DOA_cart(:,1),DOA_cart(:,2),DOA_cart(:,3));
 [DOA_cart(:,1), DOA_cart(:,2), DOA_cart(:,3)] = sph2cart(DOA_rad(:,1),DOA_rad(:,2),1);
 
-%plot3(DOA_cart(:,1),DOA_cart(:,2),DOA_cart(:,3))
 L_HRTF = length(HRTF_TransL(:,1));
 
 Left_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
@@ -55,7 +54,7 @@ if SRIR_data.DiffComponent
     
     % Spatializing diffuse streams
     DiffDOA = getLebedevSphere(SRIR_data.DiffN);   
-    [idxDiff, ~] = knnsearch(BRIR_data.HRTF_cartDir, [DiffDOA.x DiffDOA.y DiffDOA.z]);
+    [idxDiff, ~] = knnsearch(BRIR_data.HRTF_cartDir, [DiffDOA.x, DiffDOA.y, DiffDOA.z]);
     for diff_i=1:size(SRIR_data.DiffRIR,2)
         Left_RIR = Left_RIR + conv(SRIR_data.DiffRIR(:,diff_i), HRTF_TransL(:,idxDiff(diff_i)));
         Right_RIR = Right_RIR + conv(SRIR_data.DiffRIR(:,diff_i), HRTF_TransR(:,idxDiff(diff_i)));
@@ -78,12 +77,11 @@ for samp_n=1:length(SRIR_data.P_RIR(1:N))
     Right_RIR(samp_n:samp_n+L_HRTF-1) = Right_RIR(samp_n:samp_n+L_HRTF-1) ...
         + P_IR(samp_n).*HRTF_TransR(:,idx(samp_n));  
 end
-hold on
 
 Left_RIR = Left_RIR(1:N);
 Right_RIR = Right_RIR(1:N);
 
-SRIR_data.Spec_BRIR = [Left_RIR Right_RIR];
+SRIR_data.Spec_BRIR = [Left_RIR, Right_RIR];
 
 BRIR = SRIR_data.Diff_BRIR + SRIR_data.Spec_BRIR;
 

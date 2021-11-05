@@ -40,7 +40,7 @@
 % Last modified: 10/12/2021
 
 
-clear; clc;
+clear; clc; close all;
 
 % set current folder to the one containing this script for relative paths 
 % to work properly
@@ -122,13 +122,15 @@ end; clear HRIR_URL;
 
 %% Rendering parameters
 QuantizeDOAFlag = true;             % Flag to determine if DOA information must me quantized.
-DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid
+DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid.
 NamingCond      = sprintf('Quantized%dDOA', DOADirections); % String used for naming purposes, useful when rendering variations of the same RIR.
 BRIRAtten       = 30;               % Attenuation of the rendered BRIRs (in dB). Useful to avoid clipping. Use the same value when rendering various
                                     % positions in the same room to maintain relative level differences.
-AzOrient        = (-180:2:180)';    % Render BRIRs every 2 degrees in azimuth
-ElOrient        = (-90:5:90)';      % Render BRIRs every 5 degrees in elevation
-DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved
+AzOrient        = (-180:2:180)';    % Render BRIRs every 2 degrees in azimuth.
+ElOrient        = (-90:5:90)';      % Render BRIRs every 5 degrees in elevation.
+PlotAnalysisFlag = true;            % Flag to determine if analysis results should be plotted.ahaha
+PlotExportFlag   = true;            % Flag to determine if analysis result plots should be exported.
+DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved.
 
 % Append configuration to destination path
 DestinationPath = fullfile(DestinationPath, ...
@@ -153,12 +155,28 @@ BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
 clear HRIR_Subject HRIR_Type HRIR_Path NamingCond BRIRAtten AzOrient ElOrient ...
     QuantizeDOAFlag DOADirections DestinationPath;
 
+% Initialize visualization struct (from SDM Toolbox, with additions)
+Plot_data = createVisualizationStruct(...
+    'fs', SRIR_data.fs, 'DefaultRoom', 'Small', ... % or 'VerySmall, 'Medium', 'Large'
+    'name', strrep(sprintf('%s_%s_%s', ...
+    SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos), '_', '\_'));
+Plot_data.PlotAnalysisFlag = PlotAnalysisFlag;
+Plot_data.PlotExportFlag = PlotExportFlag;
+Plot_data.DestinationPath = BRIR_data.DestinationPath;
+clear PlotAnalysisFlag PlotExportFlag;
+
 %% Analysis
 % Estimate directional information using SDM. This function is a wrapper of
 % the SDM Toolbox DOA estimation (using TDOA analysis) to include some 
 % post-processing. The actual DOA estimation is performed by the SDMPar.m 
 % function of the SDM Toolbox.
 SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
+
+if Plot_data.PlotAnalysisFlag
+    % Plot analysis results
+    Plot_Spec(SRIR_data, Plot_data, [Plot_data.name, '_time_frequency']);
+    Plot_DOA(SRIR_data, Plot_data, [Plot_data.name, '_spatio_temporal']);
+end
 
 %% Synthesis
 % 1. Pre-processing operations (massage HRTF directions, resolve DOA NaNs).
@@ -174,6 +192,10 @@ HRTF_data = Read_HRTF(BRIR_data);
 
 if BRIR_data.QuantizeDOAFlag
     [SRIR_data, ~] = QuantizeDOA(SRIR_data, BRIR_data.DOADirections, 128);
+    
+    if Plot_data.PlotAnalysisFlag
+        Plot_DOA(SRIR_data, Plot_data, [Plot_data.name, '_spatio_temporal_quantized']);
+    end
 end
 
 % -----------------------------------------------------------------------
@@ -206,7 +228,7 @@ nDirs = length(BRIR_data.Directions);
 % Render early reflections
 hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
 parfor iDir = 1:nDirs
-    hbar.iterate();
+    hbar.iterate(); %#ok<PFBNS>
     BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
         HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:), 0);
     BRIR_TimeDataTemp = ModifyReverbSlope(BRIR_data, BRIR_TimeDataTemp, ...
