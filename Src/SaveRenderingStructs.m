@@ -9,17 +9,12 @@ function SaveRenderingStructs(SRIR_data, BRIR_data)
 %   - BRIR_data: Struct containing BRIR information (see create_BRIR_data)
 %
 %   Author: Sebastià V. Amengual
-%   Last modified: 10/12/21
-
-Save_Path = fullfile(BRIR_data.DestinationPath, ...
-    strrep(BRIR_data.HRTF_Subject, ' ', '_'), ...
-    sprintf('%s_%s_%s', SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos), ...
-    BRIR_data.RenderingCondition);
+%   Last modified: 11/05/2021
 
 % create output directory (ignore if it already exists)
-[~, ~] = mkdir(Save_Path);
+[~, ~] = mkdir(BRIR_data.DestinationPath);
 
-save(fullfile(Save_Path, 'SRIR_data.mat'), 'SRIR_data');
-save(fullfile(Save_Path, 'BRIR_data.mat'), 'BRIR_data');
+save(fullfile(BRIR_data.DestinationPath, 'SRIR_data.mat'), 'SRIR_data');
+save(fullfile(BRIR_data.DestinationPath, 'BRIR_data.mat'), 'BRIR_data');
 
 end
