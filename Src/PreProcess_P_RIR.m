@@ -13,16 +13,16 @@ function SRIR_data = PreProcess_P_RIR(SRIR_data)
 
 % Denoising Pressure RIR
 if SRIR_data.Denoise
-    fprintf('\nDenoising the pressure RIR ... ');
+    fprintf('\nStarted denoising pressure RIR\n');
     
     try
         SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
             SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);
-        fprintf('done.\n\n');
+        fprintf('Ended denoising pressure RIR.\n\n');
         
     catch ME
         if strcmp(ME.identifier, 'MATLAB:UndefinedFunction')
-            fprintf('skipped.\n');
+            fprintf('Skipped denoising the pressure RIR.\n');
             warning('Matlab Curve Fitting Toolbox is unavailable.');
         else
             try
@@ -32,10 +32,10 @@ if SRIR_data.Denoise
                 SRIR_data.DenoiseLowFreq = 125;
                 SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
                     SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);
-                fprintf('done.\n\n');
+                fprintf('Ended denoising pressure RIR.\n\n');
                 
             catch
-                fprintf('skipped.\n');
+                fprintf('Skipped denoising pressure RIR.\n');
                 warning(['The pressure RIR could not be denoised. It might ', ...
                     'be too short, have not enough SNR or be already denoised.']);
             end

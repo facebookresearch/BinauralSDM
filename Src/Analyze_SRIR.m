@@ -40,6 +40,6 @@ if SRIR_data.AlignDOA
     SRIR_data = align_DOA(SRIR_data);
 end
 
-fprintf('\n');
+fprintf('\n\n');
 
 end

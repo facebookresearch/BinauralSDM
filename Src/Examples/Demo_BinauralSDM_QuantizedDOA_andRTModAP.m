@@ -147,9 +147,6 @@ BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
 clear HRIR_Subject HRIR_Type HRIR_Path NamingCond BRIRAtten AzOrient ElOrient ...
     QuantizeDOAFlag DOADirections DestinationPath;
 
-% Read HRTF dataset for re-synthesis
-HRTF_data = Read_HRTF(BRIR_data);
-
 %% Analysis
 % Estimate directional information using SDM. This function is a wrapper of
 % the SDM Toolbox DOA estimation (using TDOA analysis) to include some 
@@ -159,6 +156,9 @@ SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
 
 %% Synthesis
 % 1. Pre-processing operations (massage HRTF directions, resolve DOA NaNs).
+
+% Read HRTF dataset for re-synthesis
+HRTF_data = Read_HRTF(BRIR_data);
 
 [SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = ...
     PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_data);
