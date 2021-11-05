@@ -78,7 +78,7 @@ WinLen          = 62;                   % Window Length (in samples) for SDM DOA
                                         % The optimal size might be room dependent. See Tervo et al. 2013 and Amengual et al. 2020 for a discussion.
 
 % Initialize SRIR data struct
-SRIR_data = create_SRIR_data('MicArray', MicArray,...
+SRIR_data = create_SRIR_data('MicArray',MicArray,...
                              'Room',Room,...
                              'SourcePos',SourcePos,...
                              'ReceiverPos',ReceiverPos,...
@@ -90,20 +90,23 @@ SRIR_data = create_SRIR_data('MicArray', MicArray,...
                              'Denoise',DenoiseFlag,...
                              'FilterRaw',FilterRawFlag,...
                              'AlignDOA',AlignDOAFlag);
+clear MicArray Room SourcePos ReceiverPos Database_Path fs MixingTime ...
+    DOASmooth BRIRLength DenoiseFlag FilterRawFlag AlignDOAFlag;
 
 % Initialize SDM analysis struct (from SDM Toolbox)
 SDM_Struct = createSDMStruct('c',SpeedSound,...
                              'fs',SRIR_data.fs,...
                              'micLocs',SRIR_data.ArrayGeometry,...
-                             'winLen',62);
+                             'winLen',WinLen);
+clear SpeedSound WinLen;
 
 %% Download a HRIR from the Cologne audio team server
 % (skipped automatically if the HRIR dataset already exists)
 HRIR_URL = 'https://zenodo.org/record/3928297/files/HRIR_FULL2DEG.sofa?download=1';
 HRIR_Folder   = '../../Data/HRIRs/';
 HRIR_Filename = 'KU100_HRIR_FULL2DEG_Koeln.sofa';
-HRIR_Subject  = 'KU100'; % Name of the HRIR subject (only used for naming purposes while saving).
-HRIR_Type     = 'SOFA';  % File format of the HRIR. Only SOFA is supported for now.
+HRIR_Subject  = 'KU100';    % Name of the HRIR subject (only used for naming purposes while saving).
+HRIR_Type     = 'SOFA';     % File format of the HRIR. Only SOFA is supported for now.
 
 [~,~] = mkdir(HRIR_Folder); % ignore warning if directory already exists
 HRIR_Path = fullfile(HRIR_Folder, HRIR_Filename);
@@ -115,7 +118,7 @@ if isfile(HRIR_Path)
 else
     websave(HRIR_Path, HRIR_URL);
     fprintf('done.\n\n');
-end
+end; clear HRIR_URL;
 
 %% Rendering parameters
 QuantizeDOAFlag = true;             % Flag to determine if DOA information must me quantized.
@@ -128,11 +131,11 @@ ElOrient        = (-90:5:90)';      % Render BRIRs every 5 degrees in elevation
 DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved
 
 % Initialize re-synthesized BRIR struct
-BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
+BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
                              'HRTF_Subject',HRIR_Subject,...
                              'HRTF_Type',HRIR_Type,...
                              'HRTF_Path',HRIR_Path,...
-                             'Length',BRIRLength,...
+                             'Length',SRIR_data.Length,...
                              'RenderingCondition',NamingCond,...
                              'Attenuation',BRIRAtten,...
                              'AzOrient',AzOrient,...
@@ -140,10 +143,12 @@ BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
                              'QuantizeDOAFlag',QuantizeDOAFlag,...
                              'DOADirections',DOADirections,...
                              'DestinationPath',DestinationPath,...
-                             'fs',fs);
+                             'fs',SRIR_data.fs);
+clear HRIR_Subject HRIR_Type HRIR_Path NamingCond BRIRAtten AzOrient ElOrient ...
+    QuantizeDOAFlag DOADirections DestinationPath;
 
 % Read HRTF dataset for re-synthesis
-HRTF = Read_HRTF(BRIR_data);
+HRTF_data = Read_HRTF(BRIR_data);
 
 %% Analysis
 % Estimate directional information using SDM. This function is a wrapper of
@@ -156,13 +161,13 @@ SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
 % 1. Pre-processing operations (massage HRTF directions, resolve DOA NaNs).
 
 [SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = ...
-    PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF);
+    PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_data);
 
 % -----------------------------------------------------------------------
 % 2. Quantize DOA information, if required
 
 if BRIR_data.QuantizeDOAFlag
-    [SRIR_data, idx] = QuantizeDOA(SRIR_data, BRIR_data.DOADirections, 128);
+    [SRIR_data, ~] = QuantizeDOA(SRIR_data, BRIR_data.DOADirections, 128);
 end
 
 % -----------------------------------------------------------------------
@@ -170,7 +175,7 @@ end
 
 % Synthesize one direction to extract the reverb compensation - solving the
 % SDM synthesis spectral whitening
-PreBRIR = Synthesize_SDM_Binaural(...
+BRIR_Pre = Synthesize_SDM_Binaural(...
     SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], 1);
 
 % Using the pressure RIR as a reference for the reverberation compensation
@@ -178,13 +183,15 @@ BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR, SRIR_data.P_RIR];
 
 % Get the desired T30 from the Pressure RIR and the actual T30 from one
 % rendered BRIR
-[DesiredT30, OriginalT30, RTFreqVector] = GetReverbTime(SRIR_data, PreBRIR, 3); 
+[BRIR_data.DesiredT30, BRIR_data.OriginalT30, BRIR_data.RTFreqVector] = ...
+    GetReverbTime(SRIR_data, BRIR_Pre, 3);
+clear BRIR_Pre;
 
 % -----------------------------------------------------------------------
 % 4. Render BRIRs with RTMod compensation for the specified directions
 
 % Initialize BRIR matrix
-BRIR_Early = zeros((BRIR_data.MixingTime + BRIR_data.TimeGuard) * BRIR_data.fs, ...
+BRIR_TimeData = zeros((BRIR_data.MixingTime + BRIR_data.TimeGuard) * BRIR_data.fs, ...
     2, length(BRIR_data.Directions));
 
 % Render BRIRs
@@ -194,38 +201,43 @@ nDirs = length(BRIR_data.Directions);
 hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
 parfor iDir = 1:nDirs
     hbar.iterate();
-    BRIR_TimeDataTemp = Synthesize_SDM_Binaural(...
-        SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:), 0);
-    BRIR_TimeDataTemp = ModifyReverbSlope(...
-        BRIR_data, BRIR_TimeDataTemp, OriginalT30, DesiredT30, RTFreqVector);
-    BRIR_Early(:,:,iDir) = BRIR_TimeDataTemp;
+    BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
+        HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir,:), 0);
+    BRIR_TimeDataTemp = ModifyReverbSlope(BRIR_data, BRIR_TimeDataTemp, ...
+        BRIR_data.OriginalT30, BRIR_data.DesiredT30, BRIR_data.RTFreqVector);
+    BRIR_TimeData(:,:,iDir) = BRIR_TimeDataTemp;
 end
 close(hbar);
 clear iDir hbar;
 
 % Render late reverb
-BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], 1);
-BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, OriginalT30, DesiredT30, RTFreqVector);
+BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
+    HRTF_TransL, HRTF_TransR, [0, 0], 1);
+BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, ...
+    BRIR_data.OriginalT30, BRIR_data.DesiredT30, BRIR_data.RTFreqVector);
 
 % Remove leading zeros
-[BRIR_Early, BRIR_full] = removeInitialDelay(...
-    BRIR_Early, BRIR_full, -20, BRIR_data.MixingTime * BRIR_data.fs);
+[BRIR_TimeData, BRIR_full] = removeInitialDelay(...
+    BRIR_TimeData, BRIR_full, -20, BRIR_data.MixingTime * BRIR_data.fs);
 
 % Split the BRIR
-[early_BRIR, late_BRIR, DS_BRIR, ER_BRIR] = split_BRIR(...
-    BRIR_Early, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
+[BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = split_BRIR(...
+    BRIR_TimeData, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
+clear BRIR_full;
 
 % -----------------------------------------------------------------------
 % 5. Apply AP processing for the late reverb
 
 % AllPass filtering for the late reverb (increasing diffuseness and
 % smoothing out the EDC)
-allpass_delays = [37, 113, 215, 347]; % in samples
-allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
+BRIR_data.allpass_delays = [37, 113, 215, 347]; % in samples
+BRIR_data.allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
 
 for iAllPass = 1:3
-    late_BRIR(:,1) = allpass_filter(late_BRIR(:,1), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
-    late_BRIR(:,2) = allpass_filter(late_BRIR(:,2), allpass_delays(iAllPass), 0.1, BRIR_data.fs);
+    BRIR_LR(:,1) = allpass_filter(BRIR_LR(:,1), ...
+        BRIR_data.allpass_delays(iAllPass), 0.1, BRIR_data.fs);
+    BRIR_LR(:,2) = allpass_filter(BRIR_LR(:,2), ...
+        BRIR_data.allpass_delays(iAllPass), 0.1, BRIR_data.fs);
 end; clear iAllPass;
 
 % -----------------------------------------------------------------------
@@ -235,17 +247,17 @@ hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
 for iDir = 1:nDirs
     hbar.iterate();
     if iDir == 1 % export identical late reverberation only once
-        late_BRIR_export = late_BRIR;
+        BRIR_LR_export = BRIR_LR;
     else
-        late_BRIR_export = [];
+        BRIR_LR_export = [];
     end
-    SaveBRIR(SRIR_data, BRIR_data, DS_BRIR(:,:,iDir), early_BRIR(:,:,iDir), ...
-        ER_BRIR(:,:,iDir), late_BRIR_export, BRIR_data.Directions(iDir,:));
+    SaveBRIR(SRIR_data, BRIR_data, BRIR_DS(:,:,iDir), BRIR_DSER(:,:,iDir), ...
+        BRIR_ER(:,:,iDir), BRIR_LR_export, BRIR_data.Directions(iDir,:));
 end
 hbar.iterate();
 SaveRenderingStructs(SRIR_data, BRIR_data);
 close(hbar);
-clear iDir hbar late_BRIR_export;
+clear iDir hbar BRIR_LR_export nDirs;
 
 %%
 time_exec = toc(time_start);
