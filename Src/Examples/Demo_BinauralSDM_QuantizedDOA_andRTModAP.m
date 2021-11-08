@@ -271,6 +271,10 @@ end; clear iAllPass;
 % -----------------------------------------------------------------------
 % 6. Save BRIRs
 
+if Plot_data.PlotAnalysisFlag
+    Plot_BRIR(BRIR_data, BRIR_DS, BRIR_ER, BRIR_LR, Plot_data);
+end
+
 hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
 for iDir = 1:nDirs
     hbar.iterate();
