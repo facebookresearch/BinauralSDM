@@ -22,10 +22,8 @@ DOA_DS = SRIR_data.DOA(abs(SRIR_data.P_RIR)==max(abs(SRIR_data.P_RIR)),:);
 az_deg = rad2deg(az_rad);
 el_deg = rad2deg(el_rad);
 
-% Apply rotations first around Z (azimuth rotation) and then around Y axis (elevation
-% rotation)
-SRIR_data.DOA = (roty(el_deg)*rotz(-az_deg)*SRIR_data.DOA')';
 fprintf('Aligning DOA by %.1f deg azimuth and %.1f deg elevation.\n', ...
     az_deg, el_deg);
+SRIR_data = Rotate_DOA(SRIR_data, az_deg, el_deg);
 
 end

@@ -8,7 +8,7 @@ function SRIR_data = Analyze_SRIR(SRIR_data, SDM_struct)
 %       - SDM Toolbox https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox
 %
 % Author: Sebastià V. Amengual
-% Last Modified: 07/09/20
+% Last Modified: 11/08/2021
 
 
 % Computing DOA
@@ -37,9 +37,9 @@ SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end,:);
 SRIR_data = Smooth_DOA(SRIR_data);
 
 if SRIR_data.AlignDOA
-    SRIR_data = align_DOA(SRIR_data);
+    SRIR_data = Align_DOA(SRIR_data);
 end
 
-fprintf('\n\n');
+fprintf('\n');
 
 end

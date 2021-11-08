@@ -9,7 +9,7 @@ function SRIR_data = Smooth_DOA(SRIR_data)
 %
 % To-Do: Include DBSCAN clustering
 
-fprintf('Smoothing DOA using a window of %d samples', SRIR_data.DOASmooth);
+fprintf('Smoothing DOA using a window of %d samples.\n', SRIR_data.DOASmooth);
 SRIR_data.DOA(:,1) = movmean(SRIR_data.DOA(:,1),SRIR_data.DOASmooth);
 SRIR_data.DOA(:,2) = movmean(SRIR_data.DOA(:,2),SRIR_data.DOASmooth);
 SRIR_data.DOA(:,3) = movmean(SRIR_data.DOA(:,3),SRIR_data.DOASmooth);
