@@ -11,6 +11,16 @@ if isempty(BRIR_idx)
     BRIR_idx = floor(size(BRIR_data.Directions, 1) / 2);
 end
 
+% determine IR lengths
+for ear = 1 : 2
+    len_DS(ear, :) = [find(BRIR_DS(:, ear, BRIR_idx), 1, 'first'); ...
+        find(BRIR_DS(:, ear, BRIR_idx), 1, 'last')];
+    len_ER(ear, :) = [find(BRIR_ER(:, ear, BRIR_idx), 1, 'first'); ...
+        find(BRIR_ER(:, ear, BRIR_idx), 1, 'last')];
+    len_LR(ear, :) = [find(BRIR_LR(:, ear), 1, 'first'); ...
+        find(BRIR_LR(:, ear), 1, 'last')];
+end
+
 % zero pad IRs
 BRIR_DS(end:length(BRIR_LR), :) = 0;
 BRIR_ER(end:length(BRIR_LR), :) = 0;
@@ -26,6 +36,7 @@ f = (0 : length(BRIR_LR)-1).' * Plot_data.fs / length(BRIR_LR);
 default_intpreter = get(0, 'DefaultTextInterpreter');
 set(0, 'DefaultTextInterpreter', 'Latex');
 
+ear_str = {'left', 'right'};
 dir_str = sprintf('BRIR_az%del%d', BRIR_data.Directions(BRIR_idx, :));
 fig_name = sprintf('%s_%s', Plot_data.name, dir_str);
 fig_name = strrep(fig_name, '\', '');
@@ -35,19 +46,32 @@ fig.Position(3:4) = fig.Position(3:4) * 2;
 tl = tiledlayout(2, 2, 'TileSpacing', 'tight', 'Padding', 'tight');
 title(tl, Plot_data.name);
 for ear = 1 : 2
-    ax(ear) = nexttile(tl); %#ok<AGROW>
+    ax(ear) = nexttile(tl);
     plot(t, BRIR_DS(:, ear, BRIR_idx), 'Color', Plot_data.colors(2, :));
     hold on;
     plot(t, BRIR_ER(:, ear, BRIR_idx), 'Color', Plot_data.colors(3, :));
     plot(t, BRIR_LR(:, ear), 'Color', Plot_data.colors(4, :));
     xlabel('Time [ms]');
     ylabel('Amplitude');
-    grid on; axis tight;
-    if ear == 2
-        set(ax(ear), 'YAxisLocation', 'right');
-        linkaxes(ax, 'xy');
-    end
+    axis tight;
+    grid on;
+    
+    text(.02, .98, sprintf('%d ... %d samples', len_DS(ear, :)), ...
+        'Units', 'normalized', 'Color', Plot_data.colors(2, :), ...
+        'FontWeight', 'bold', 'Interpreter', 'none',  ...
+        'HorizontalAlignment', 'left', 'VerticalAlignment', 'top');
+    text(.5, .98, sprintf('%d ... %d samples', len_ER(ear, :)), ...
+        'Units', 'normalized', 'Color', Plot_data.colors(3, :), ...
+        'FontWeight', 'bold', 'Interpreter', 'none',  ...
+        'HorizontalAlignment', 'center', 'VerticalAlignment', 'top');
+    text(.98, .98, sprintf('%d ... %d samples', len_LR(ear, :)), ...
+        'Units', 'normalized', 'Color', Plot_data.colors(4, :), ...
+        'FontWeight', 'bold', 'Interpreter', 'none',  ...
+        'HorizontalAlignment', 'right', 'VerticalAlignment', 'top');
 end
+set(ax(end), 'YAxisLocation', 'right');
+linkaxes(ax, 'xy');
+
 for ear = 1 : 2
     ax(ear) = nexttile(tl);
     semilogx(f, BRTF_full(:, ear, BRIR_idx), ...
@@ -67,15 +91,10 @@ for ear = 1 : 2
     lgd = legend(ax(ear), ...
         {'Combined', 'Late reverb', 'Early reflections', 'Direct sound'}, ...
             'Location', 'SouthWest');
-    title(lgd, ['Left ', dir_str]);
-    if ear == 2
-        title(lgd, [dir_str, '  (right)'], 'Interpreter', 'None');
-        set(ax(ear), 'YAxisLocation', 'right');
-        linkaxes(ax, 'xy');
-    else
-        title(lgd, [dir_str, '  (left)'], 'Interpreter', 'None');
-    end
+    title(lgd, sprintf('%s,  (%s)', dir_str, ear_str{ear}), 'Interpreter', 'None');
 end
+set(ax(end), 'YAxisLocation', 'right');
+linkaxes(ax, 'xy');
 
 drawnow;
 
