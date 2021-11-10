@@ -28,29 +28,29 @@ DOA_DS_peak = SRIR_data.DOA(DS_peak, :);
 DOA_DS_peak_az_deg = rad2deg(DOA_DS_peak_az_rad);
 DOA_DS_peak_el_deg = rad2deg(DOA_DS_peak_el_rad);
 
-% plot comparison
-figure('NumberTitle', 'off', 'Name', 'Align_DOA');
-colors = colororder;
-plot([DOA_raw_az_deg, DOA_raw_el_deg], 'LineWidth', 2);
-hold on;
-line([0, SRIR_data.DOAOnsetLength], [DOA_DS_avg_az_deg, DOA_DS_avg_az_deg], ...
-    'LineStyle', ':', 'LineWidth', 5, 'Color', colors(1, :));
-line([0, SRIR_data.DOAOnsetLength], [DOA_DS_avg_el_deg, DOA_DS_avg_el_deg], ...
-    'LineStyle', ':', 'LineWidth', 5, 'Color', colors(2, :));
-stem(DS_peak, DOA_DS_peak_az_deg, 'filled', 'MarkerSize', 10, ...
-    'LineStyle', 'none', 'Color', colors(1, :));
-stem(DS_peak, DOA_DS_peak_el_deg, 'filled', 'MarkerSize', 10, ...
-    'LineStyle', 'none', 'Color', colors(2, :));
-xlim([0, max([SRIR_data.DOAOnsetLength * 2.5, DS_peak + 50])]);
-ylim([-180, 180]);
-xlabel('Samples');
-ylabel('DOA angle [deg]');
-yyaxis right;
-plot(SRIR_data.Raw_RIR(:, 7));
-ylabel('Amplitude');
-legend({'Raw az', 'Raw el', 'DS avg az', 'DS avg el', 'DS peak az', 'DS peak el', 'Raw RIR'}, ...
-    'Interpreter', 'none', 'Location', 'Best');
-grid on;
+% % plot comparison
+% figure('NumberTitle', 'off', 'Name', 'Align_DOA');
+% colors = colororder;
+% plot([DOA_raw_az_deg, DOA_raw_el_deg], 'LineWidth', 2);
+% hold on;
+% line([0, SRIR_data.DOAOnsetLength], [DOA_DS_avg_az_deg, DOA_DS_avg_az_deg], ...
+%     'LineStyle', ':', 'LineWidth', 5, 'Color', colors(1, :));
+% line([0, SRIR_data.DOAOnsetLength], [DOA_DS_avg_el_deg, DOA_DS_avg_el_deg], ...
+%     'LineStyle', ':', 'LineWidth', 5, 'Color', colors(2, :));
+% stem(DS_peak, DOA_DS_peak_az_deg, 'filled', 'MarkerSize', 10, ...
+%     'LineStyle', 'none', 'Color', colors(1, :));
+% stem(DS_peak, DOA_DS_peak_el_deg, 'filled', 'MarkerSize', 10, ...
+%     'LineStyle', 'none', 'Color', colors(2, :));
+% xlim([0, max([SRIR_data.DOAOnsetLength * 2.5, DS_peak + 50])]);
+% ylim([-181, 181]);
+% xlabel('Samples');
+% ylabel('DOA angle [deg]');
+% yyaxis right;
+% plot(SRIR_data.Raw_RIR(:, 7));
+% ylabel('Amplitude');
+% legend({'Raw az', 'Raw el', 'DS avg az', 'DS avg el', 'DS peak az', 'DS peak el', 'Raw RIR'}, ...
+%     'Interpreter', 'none', 'Location', 'Best');
+% grid on;
 
 % Pick method depending on timing of peak sample
 if DS_peak > SRIR_data.DOAOnsetLength
