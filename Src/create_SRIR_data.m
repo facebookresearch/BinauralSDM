@@ -20,6 +20,9 @@ function SRIR_data = create_SRIR_data(varargin)
 %               the direct sound at az=0º, el=0º - boolean - default: true.
 %       - DOASmooth: Window length for DOA estimates smoothing - integer -
 %               default: 16.
+%       - DOAOnsetLength: Length (in samples) for assignment of a constant 
+%               (averaged) DOA for the onset / direct sound - integer -
+%               default: 128.
 %       - MicArray: Array model corresponding to the Raw_RIR. - string
 %               ('Tetramic', 'Eigenmike', 'FRL_5cm' or 'FRL_10cm') - 
 %               default: 'NoArray'.
@@ -58,7 +61,7 @@ function SRIR_data = create_SRIR_data(varargin)
 %               '../../Data/RIRs/'.
 %
 % Author: Sebastià V. Amengual (samengual@fb.com)
-% Last Modified: 11/05/2021
+% Last Modified: 11/09/2021
 %
 %
 % TO-DO
@@ -87,7 +90,7 @@ function SRIR_data = create_SRIR_data(varargin)
 
 % Check input arguments
 listNames = {'fs','Room','SourcePos','ReceiverPos','Raw_RIR','P_RIR','DOA',...
-    'DOASmooth','RandomDOA','MicArray','ArrayGeometry','Method','Length',...
+    'DOASmooth','DOAOnsetLength','RandomDOA','MicArray','ArrayGeometry','Method','Length',...
     'Split','MixingTime','Denoise','DenoiseLowFreq','DenoiseHighFreq','PlotDenoisedRIR',...
     'OmniMicLag','DS_idx','FilterRaw','FilterRawLowFreq','FilterRawHighFreq',...
     'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA'};
@@ -109,6 +112,7 @@ SRIR_data.P_RIR = [1 ; zeros(SRIR_data.fs-1,1)];
 SRIR_data.DOA = zeros(SRIR_data.fs,1);
 SRIR_data.AlignDOA = true;
 SRIR_data.DOASmooth = 16;
+SRIR_data.DOAOnsetLength = 128;
 SRIR_data.RandomDOA = false;
 SRIR_data.MicArray = 'NoArray';
 SRIR_data.ArrayGeometry = [0 0 0];
