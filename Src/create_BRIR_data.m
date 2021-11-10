@@ -29,16 +29,21 @@ function BRIR_data = create_BRIR_data (varargin)
 %               create a folder in which renderings are saved and is only
 %               used for naming purposes during saving - string - 
 %               default: 'Original'.
+%       - DOAAzOffset: Azimuth rotation in degrees aplied after DOA 
+%               estmation and before DOA quantization / BRIR rendering -
+%               float - default: 0.0.
+%       - DOAElOffset: Elevation rotation in degrees aplied after DOA 
+%               estmation and before DOA quantization / BRIR rendering -
+%               float - default: 0.0.
 %       - QuantizeDOAFlag: Flag to indicate whether DOA information must me
 %               quantized - boolean - default: false.
 %       - DOADirections: Number of directions to quantize DOA information,
 %               which is only relevant if QuantizeDOAFlag is set - integer
-%               - default: 50. 
+%               - default: 50.
 %
 
 % Author: Sebastia V. Amengual (samengual@fb.com)
-% Last modified: 04/30/2019
-% Last modified: 11/05/2021
+% Last modified: 11/09/2021
 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
@@ -51,7 +56,8 @@ function BRIR_data = create_BRIR_data (varargin)
 % Check input arguments
 listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
     'DestinationPath','Length','Split','MixingTime','AzOrient','ElOrient',...
-    'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections'};
+    'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections',...
+    'DOAAzOffset','DOAElOffset'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -92,6 +98,8 @@ BRIR_data.RenderingCondition = 'Original';
 
 BRIR_data.FilterBank_bandsperoctave = 3;
 
+BRIR_data.DOAAzOffset = 0.0;
+BRIR_data.DOAElOffset = 0.0;
 BRIR_data.QuantizeDOAFlag = false;
 BRIR_data.DOADirections = 50;
 

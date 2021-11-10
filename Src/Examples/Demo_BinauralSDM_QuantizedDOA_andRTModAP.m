@@ -123,6 +123,8 @@ else
 end; clear HRIR_URL;
 
 %% Rendering parameters
+DOAAzOffset      = 0.0;             % Azimuth rotation in degrees aplied after DOA estmation and before DOA quantization / BRIR rendering.
+DOAElOffset      = 0.0;             % Elevation rotation in degrees aplied after DOA estmation and before DOA quantization / BRIR rendering. 
 QuantizeDOAFlag = true;             % Flag to determine if DOA information must me quantized.
 DOADirections   = 50;               % Number of directions to which the spatial information will be quantized using a Lebedev grid.
 NamingCond      = sprintf('Quantized%dDOA', DOADirections); % String used for naming purposes, useful when rendering variations of the same RIR.
@@ -150,12 +152,14 @@ BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
                              'Attenuation',BRIRAtten,...
                              'AzOrient',AzOrient,...
                              'ElOrient',ElOrient,...
+                             'DOAAzOffset',DOAAzOffset,...
+                             'DOAElOffset',DOAElOffset,...
                              'QuantizeDOAFlag',QuantizeDOAFlag,...
                              'DOADirections',DOADirections,...
                              'DestinationPath',DestinationPath,...
                              'fs',SRIR_data.fs);
 clear HRIR_Subject HRIR_Type HRIR_Path NamingCond BRIRAtten AzOrient ElOrient ...
-    QuantizeDOAFlag DOADirections DestinationPath;
+    DOAAzOffset DOAElOffset QuantizeDOAFlag DOADirections DestinationPath;
 
 % Initialize visualization struct (from SDM Toolbox, with additions)
 Plot_data = createVisualizationStruct(...
@@ -176,8 +180,12 @@ SRIR_data = Analyze_SRIR(SRIR_data, SDM_Struct);
 
 if Plot_data.PlotAnalysisFlag
     % Plot analysis results
+    plot_name = [Plot_data.name, '_spatio_temporal'];
+    if SRIR_data.AlignDOA; plot_name = [plot_name, '_aligned']; end
+    
     Plot_Spec(SRIR_data, Plot_data, [Plot_data.name, '_time_frequency']);
-    Plot_DOA(SRIR_data, Plot_data, [Plot_data.name, '_spatio_temporal']);
+    Plot_DOA(SRIR_data, Plot_data, plot_name);
+    clear plot_name;
 end
 
 %% Synthesis
@@ -190,7 +198,19 @@ HRTF_data = Read_HRTF(BRIR_data);
     PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_data);
 
 % -----------------------------------------------------------------------
-% 2. Quantize DOA information, if required
+% 2. Rotate DOA information, if required
+
+if BRIR_data.DOAAzOffset || BRIR_data.DOAElOffset
+    SRIR_data = Rotate_DOA(SRIR_data, ...
+        BRIR_data.DOAAzOffset, BRIR_data.DOAElOffset);
+
+    if Plot_data.PlotAnalysisFlag
+        Plot_DOA(SRIR_data, Plot_data, [Plot_data.name, '_spatio_temporal_rotated']);
+    end
+end
+
+% -----------------------------------------------------------------------
+% 3. Quantize DOA information, if required
 
 if BRIR_data.QuantizeDOAFlag
     [SRIR_data, ~] = QuantizeDOA(SRIR_data, ...
@@ -202,7 +222,7 @@ if BRIR_data.QuantizeDOAFlag
 end
 
 % -----------------------------------------------------------------------
-% 3. Compute parameters for RTMod Compensation
+% 4. Compute parameters for RTMod Compensation
 
 % Synthesize one direction to extract the reverb compensation - solving the
 % SDM synthesis spectral whitening
@@ -219,7 +239,7 @@ BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR, SRIR_data.P_RIR];
 clear BRIR_Pre;
 
 % -----------------------------------------------------------------------
-% 4. Render BRIRs with RTMod compensation for the specified directions
+% 5. Render BRIRs with RTMod compensation for the specified directions
 
 % Initialize BRIR matrix
 BRIR_TimeData = zeros((BRIR_data.MixingTime + BRIR_data.TimeGuard) * BRIR_data.fs, ...
@@ -257,7 +277,7 @@ BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, ...
 clear BRIR_full;
 
 % -----------------------------------------------------------------------
-% 5. Apply AP processing for the late reverb
+% 6. Apply AP processing for the late reverb
 
 % AllPass filtering for the late reverb (increasing diffuseness and
 % smoothing out the EDC)
@@ -272,7 +292,7 @@ for iAllPass = 1:3
 end; clear iAllPass;
 
 % -----------------------------------------------------------------------
-% 6. Save BRIRs
+% 7. Save BRIRs
 
 if Plot_data.PlotAnalysisFlag
     Plot_BRIR(BRIR_data, BRIR_DS, BRIR_ER, BRIR_LR, Plot_data);
