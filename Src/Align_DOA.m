@@ -15,7 +15,8 @@ function SRIR_data = Align_DOA(SRIR_data)
 % Locate direct sound - assumed to be the avaerage of the first samples
 [DOA_raw_az_rad, DOA_raw_el_rad, ~] = cart2sph(...
     SRIR_data.DOA(:, 1), SRIR_data.DOA(:, 2), SRIR_data.DOA(:, 3));
-DOA_raw_az_deg = rad2deg(DOA_raw_az_rad);
+% unwrap azimuth in order for mean to make sense in case of jumps at +-180
+DOA_raw_az_deg = rad2deg(unwrap(DOA_raw_az_rad));
 DOA_raw_el_deg = rad2deg(DOA_raw_el_rad);
 DOA_DS_avg_az_deg = mean(DOA_raw_az_deg(1:SRIR_data.DOAOnsetLength));
 DOA_DS_avg_el_deg = mean(DOA_raw_el_deg(1:SRIR_data.DOAOnsetLength));
@@ -29,6 +30,7 @@ DOA_DS_peak_az_deg = rad2deg(DOA_DS_peak_az_rad);
 DOA_DS_peak_el_deg = rad2deg(DOA_DS_peak_el_rad);
 
 % % plot comparison
+% t_max = max([SRIR_data.DOAOnsetLength * 2.5, DS_peak + 50]);
 % figure('NumberTitle', 'off', 'Name', 'Align_DOA');
 % colors = colororder;
 % plot([DOA_raw_az_deg, DOA_raw_el_deg], 'LineWidth', 2);
@@ -41,12 +43,14 @@ DOA_DS_peak_el_deg = rad2deg(DOA_DS_peak_el_rad);
 %     'LineStyle', 'none', 'Color', colors(1, :));
 % stem(DS_peak, DOA_DS_peak_el_deg, 'filled', 'MarkerSize', 10, ...
 %     'LineStyle', 'none', 'Color', colors(2, :));
-% xlim([0, max([SRIR_data.DOAOnsetLength * 2.5, DS_peak + 50])]);
-% ylim([-181, 181]);
+% xlim([0, t_max]);
+% ylim([floor(min([DOA_raw_az_deg(1:t_max); DOA_raw_el_deg(1:t_max)]) / 180), ...
+%     ceil(max([DOA_raw_az_deg(1:t_max); DOA_raw_el_deg(1:t_max)]) / 180)] * 180);
 % xlabel('Samples');
 % ylabel('DOA angle [deg]');
 % yyaxis right;
 % plot(SRIR_data.Raw_RIR(:, 7));
+% ylim([-1, 1] * max(abs(SRIR_data.Raw_RIR(:, 7)))); 
 % ylabel('Amplitude');
 % legend({'Raw az', 'Raw el', 'DS avg az', 'DS avg el', 'DS peak az', 'DS peak el', 'Raw RIR'}, ...
 %     'Interpreter', 'none', 'Location', 'Best');
