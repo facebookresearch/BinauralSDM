@@ -16,38 +16,38 @@ switch upper(SRIR_data.MicArray)
         [SRIR_data.P_RIR, fs_P] = audioread(SRIR_data.P_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.P_RIR(:,1);
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
-        
+
     case 'TETRAMIC'
         if SRIR_data.fs == 48e3
             SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D.wav'];
             SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic48.wav'];             
-        
+
         elseif SRIR_data.fs == 192e3
             SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'Encoded_FOA' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FOA_SN3D192.wav'];
             SRIR_data.Raw_RIR_Path = [SRIR_data.Database_Path 'RawTetramic' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_RawTetramic192.wav'];              
-        
+
         else
             error('Unhandled case for sampling frequncy of %f Hz.', SRIR_data.fs);
         end
-        
+
         [SRIR_data.P_RIR, fs_P] = audioread(SRIR_data.P_RIR_Path);
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.P_RIR(:,1);
-        
+
     case 'FRL_5CM'
         SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'FRL_array' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FRL5cm.wav'];        
         SRIR_data.Raw_RIR_Path = SRIR_data.P_RIR_Path;
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.Raw_RIR(:,7);
         fs_P = fs_Raw;
-        
+
     case 'FRL_10CM'
         SRIR_data.P_RIR_Path = [SRIR_data.Database_Path 'FRL_array' filesep SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos '_FRL10cm.wav'];        
         SRIR_data.Raw_RIR_Path = SRIR_data.P_RIR_Path;
         [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
         SRIR_data.P_RIR = SRIR_data.Raw_RIR(:,7);
         fs_P = fs_Raw;
-        
+
     otherwise
         error('Invalid microhone array type "%s".', SRIR_data.MicArray);
 end

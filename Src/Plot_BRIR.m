@@ -91,7 +91,7 @@ for ear = 1 : 2
     lgd = legend(ax(ear), ...
         {'Combined', 'Late reverb', 'Early reflections', 'Direct sound'}, ...
             'Location', 'SouthWest');
-    title(lgd, sprintf('%s,  (%s)', dir_str, ear_str{ear}), 'Interpreter', 'None');
+    title(lgd, sprintf('%s  (%s)', dir_str, ear_str{ear}), 'Interpreter', 'None');
 end
 set(ax(end), 'YAxisLocation', 'right');
 linkaxes(ax, 'xy');
