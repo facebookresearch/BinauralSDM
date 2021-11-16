@@ -25,12 +25,15 @@ end
 BRIR_DS(end:length(BRIR_LR), :) = 0;
 BRIR_ER(end:length(BRIR_LR), :) = 0;
 BRIR_full = BRIR_DS + BRIR_ER + BRIR_LR;
-BRTF_full = mag2db(abs(fft(BRIR_full)));
-BRTF_max = ceil(max(BRTF_full(:, :, BRIR_idx), [], 'all') / 5) * 5;
+BRIR_max = ceil(max(mag2db(abs(BRIR_full)), [], 'all') / 5) * 5;
 
 % calculate time and frequency vectors
 t = (0 : length(BRIR_LR)-1).' / Plot_data.fs * 1000;
 f = (0 : length(BRIR_LR)-1).' * Plot_data.fs / length(BRIR_LR);
+
+% calculate magnitude spectrum
+BRTF_full = mag2db(abs(fft(BRIR_full)));
+BRTF_max = ceil(max(BRTF_full(:, :, BRIR_idx), [], 'all') / 5) * 5;
 
 % remember and set interpreter for visualization purposes
 default_intpreter = get(0, 'DefaultTextInterpreter');
@@ -47,13 +50,14 @@ tl = tiledlayout(2, 2, 'TileSpacing', 'tight', 'Padding', 'tight');
 title(tl, Plot_data.name);
 for ear = 1 : 2
     ax(ear) = nexttile(tl);
-    plot(t, BRIR_DS(:, ear, BRIR_idx), 'Color', Plot_data.colors(2, :));
+    plot(t, mag2db(abs(BRIR_DS(:, ear, BRIR_idx))), 'Color', Plot_data.colors(2, :));
     hold on;
-    plot(t, BRIR_ER(:, ear, BRIR_idx), 'Color', Plot_data.colors(3, :));
-    plot(t, BRIR_LR(:, ear), 'Color', Plot_data.colors(4, :));
+    plot(t, mag2db(abs(BRIR_ER(:, ear, BRIR_idx))), 'Color', Plot_data.colors(3, :));
+    plot(t, mag2db(abs(BRIR_LR(:, ear))), 'Color', Plot_data.colors(4, :));
+    xlim([0, t(end)]);
+    ylim([BRIR_max - 90, BRIR_max]);
     xlabel('Time [ms]');
-    ylabel('Amplitude');
-    axis tight;
+    ylabel('Energy Time Curve [dB]');
     grid on;
     
     text(.02, .98, sprintf('%d ... %d samples', len_DS(ear, :)), ...
