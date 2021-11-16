@@ -61,7 +61,7 @@ function SRIR_data = create_SRIR_data(varargin)
 %               '../../Data/RIRs/'.
 %
 % Author: Sebastià V. Amengual (samengual@fb.com)
-% Last Modified: 11/09/2021
+% Last Modified: 11/16/2021
 %
 %
 % TO-DO
@@ -93,7 +93,8 @@ listNames = {'fs','Room','SourcePos','ReceiverPos','Raw_RIR','P_RIR','DOA',...
     'DOASmooth','DOAOnsetLength','RandomDOA','MicArray','ArrayGeometry','Method','Length',...
     'Split','MixingTime','Denoise','DenoiseLowFreq','DenoiseHighFreq','PlotDenoisedRIR',...
     'OmniMicLag','DS_idx','FilterRaw','FilterRawLowFreq','FilterRawHighFreq',...
-    'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA'};
+    'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA',...
+    'DSonsetThreshold'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))

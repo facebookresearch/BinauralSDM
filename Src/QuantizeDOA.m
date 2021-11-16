@@ -17,11 +17,12 @@ function [SRIR_data, idx] = QuantizeDOA(SRIR_data, gridSize, DSGuard, ~)
 % Last modified: 4/22/19
 
 % Finding DOA of the direct sound.
-DS_DOA = SRIR_data.DOA(SRIR_data.DS_idx-SRIR_data.DSonset+1,:);
+DS_DOA = SRIR_data.DOA(SRIR_data.DS_idx, :);
 
 if gridSize == 1
     % Assigning all DOA to the same direction as direct sound
-    SRIR_data.DOA(1:SRIR_data.MixingTime*SRIR_data.fs,:) = ones(SRIR_data.MixingTime*SRIR_data.fs,3).*DS_DOA;
+    SRIR_data.DOA(1:SRIR_data.MixingTime * SRIR_data.fs, :) = ...
+        ones(SRIR_data.MixingTime * SRIR_data.fs, 3) .* DS_DOA;
     idx = [];
 else
     if gridSize == 2
@@ -33,17 +34,17 @@ else
         LS = getLebedevSphere(gridSize);
     end
     
+    DSGuard_idx = SRIR_data.DS_idx + DSGuard;
+    
     % Assigning direct sound DOA to the initial samples, up to DSGuard
-    SRIR_data.DOA(1:DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset),:) = ones(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset),1).*DS_DOA;
+    SRIR_data.DOA(1:DSGuard_idx, :) = ones(DSGuard_idx, 1) .* DS_DOA;
     
     % Finding the nearest neighbour for the quantization
-    idx = knnsearch([LS.x LS.y LS.z], SRIR_data.DOA);
+    idx = knnsearch([LS.x, LS.y, LS.z], SRIR_data.DOA);
     
     % Assigning quantized DOA
-    SRIR_data.DOA(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset)+1:end,:) = ...
-        [LS.x(idx(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset)+1:end)) ...
-         LS.y(idx(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset)+1:end)) ...
-         LS.z(idx(DSGuard+(SRIR_data.DS_idx-SRIR_data.DSonset)+1:end))];
+    SRIR_data.DOA(DSGuard_idx+1:end, :) = [LS.x(idx(DSGuard_idx+1:end)), ...
+         LS.y(idx(DSGuard_idx+1:end)), LS.z(idx(DSGuard_idx+1:end))];
 end
 
 end

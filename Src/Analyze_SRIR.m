@@ -8,7 +8,7 @@ function SRIR_data = Analyze_SRIR(SRIR_data, SDM_struct)
 %       - SDM Toolbox https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox
 %
 % Author: Sebastià V. Amengual
-% Last Modified: 11/08/2021
+% Last Modified: 11/16/2021
 
 
 % Computing DOA
@@ -32,7 +32,8 @@ end
 % the direct sound, the DOA estimation is wrong - it does not find a 
 % solution and returns 0º,0º.
 SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(SRIR_data.DSonset:end,:);
-SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end,:);
+SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end, :);
+SRIR_data.DS_idx = SRIR_data.DS_idx - SRIR_data.DSonset;
 
 SRIR_data = Smooth_DOA(SRIR_data);
 
