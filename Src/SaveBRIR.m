@@ -15,7 +15,11 @@ function SaveBRIR(SRIR_data, BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR,
 %   Author: Sebastià V. Amengual
 %   Last modified: 4/22/19
 
-Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos];
+if isfield(BRIR_data,'customPath')
+    Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' BRIR_data.customPath];
+else
+    Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' SRIR_data.Room '_' SRIR_data.SourcePos '_' SRIR_data.ReceiverPos];
+end    
 
 if ~exist([Save_Path filesep BRIR_data.RenderingCondition filesep], 'dir')
     mkdir([Save_Path filesep BRIR_data.RenderingCondition filesep]);

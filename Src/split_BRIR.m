@@ -49,10 +49,10 @@ DS_hann = hann(DS_xfade);
 
 % Create window to retrieve direct sound
 window_DS = [ones(DS_wlength-DS_xfade/2,1);DS_hann(DS_xfade/2+1:end)];
-plot(window_DS)
-hold on
-plot(window_ER)
-plot(window_LR)
+%plot(window_DS)
+%hold on
+%plot(window_ER)
+%plot(window_LR)
 
 % Retrieve direct sound
 DS_BRIR = BRIR_TimeData(1:length(window_DS),:,:).*window_DS;

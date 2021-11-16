@@ -42,10 +42,22 @@ switch SRIR_data.MicArray
         fs_P = fs_Raw;
     case 'NoArray'
         error('It seems that you have not selected a microphone array...');
+    case 'FRL_10cm_CustomPath'
+        SRIR_data.P_RIR_Path = SRIR_data.CustomPath;        
+        SRIR_data.Raw_RIR_Path = SRIR_data.CustomPath;
+        [SRIR_data.Raw_RIR, fs_Raw] = audioread(SRIR_data.Raw_RIR_Path);
+        SRIR_data.P_RIR = SRIR_data.Raw_RIR(:,7);
+        fs_P = fs_Raw;
 end
 
 if fs_P ~= fs_Raw || SRIR_data.fs ~= fs_Raw || SRIR_data.fs ~= fs_P
-    error('Your sampling rates do not match! Check your SRIR struct or RIRs!');
+    warning('Your RIR sampling rate is different from the specified one. Resampling RIRs!');
+    if SRIR_data.fs ~= fs_Raw
+        SRIR_data.Raw_RIR = resample(SRIR_data.Raw_RIR, SRIR_data.fs, fs_Raw);
+    end
+    if SRIR_data.fs ~= fs_P
+        SRIR_data.P_RIR = resample(SRIR_data.P_RIR, SRIR_data.fs, fs_P);
+    end
 else
     SRIR_data.fs = fs_P;
 end
