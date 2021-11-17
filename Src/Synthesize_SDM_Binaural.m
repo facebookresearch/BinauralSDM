@@ -41,7 +41,7 @@ L_HRTF = length(HRTF_TransL(:,1));
 Left_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 Right_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 
-if full == 1
+if full
     N = BRIR_data.Length*BRIR_data.fs;
 else
     N = (BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs;

@@ -12,7 +12,9 @@ function BRIR_data = create_BRIR_data (varargin)
 %               default: '../../Data/HRIRs/KU100_HRIR_FULL2DEG_Koeln.sofa'.
 %       - BRIR_DestinationPath: Path to the BRIR database for saving -
 %               string - default: '../../Data/Rendered_BRIRs/'.
-%       - Length: Desired length of RIR in seconds - float - default: 1.0.
+%       - Length: Desired length of BRIR in seconds, will be chosen by 
+%               analysis of the room reverberation time if unspecified - 
+%               float - default: 0.0.
 %       - MixingTime: Start of late reverb (in seconds) - float - 
 %               default: 0.08.
 %       - AzOrient: Vector with the azimuth angles to render [N x 1] -
@@ -43,7 +45,7 @@ function BRIR_data = create_BRIR_data (varargin)
 %
 
 % Author: Sebastia V. Amengual (samengual@fb.com)
-% Last modified: 11/09/2021
+% Last modified: 11/17/2021
 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
@@ -89,7 +91,7 @@ BRIR_data.ElOrient = (-90:5:90)';
 
 BRIR_data.MixingTime = 0.08;
 BRIR_data.Split = true;
-BRIR_data.Length = 1.0;
+BRIR_data.Length = 0.0;
 BRIR_data.TimeGuard = 0.01;
 
 BRIR_data.Attenuation = 0.0;

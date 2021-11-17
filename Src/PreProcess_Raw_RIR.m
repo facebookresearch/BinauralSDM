@@ -6,12 +6,7 @@ function SRIR_data = PreProcess_Raw_RIR(SRIR_data)
 % cropping and frequency filtering.
 %
 % Author: Sebastià V. Amengual
-% Last modified: 12/18/2018
-
-
-% Cropping the Raw RIRs (but not removing leading zeros due to DOA
-% estimation requirements)
-SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(1:SRIR_data.DS_idx+SRIR_data.fs*SRIR_data.Length-1,:);
+% Last modified: 11/17/2021
 
 % Filtering raw signals
 if SRIR_data.FilterRaw

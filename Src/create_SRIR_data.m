@@ -29,7 +29,6 @@ function SRIR_data = create_SRIR_data(varargin)
 %       - ArrayGeometry: Mic positions in cartesian coordinates - 
 %               [M channels x 3] float - default: [0 0 0].
 %       - Method: SRIR analysis method - string - default: 'SDM'.
-%       - Length: Desired length of RIR in seconds - float - default: 1.0.
 %       - Split: Flag to indicate whether the rendered BRIR should be
 %               split into DS, ER and LR when saving. - boolean - 
 %               default: true.
@@ -61,7 +60,7 @@ function SRIR_data = create_SRIR_data(varargin)
 %               '../../Data/RIRs/'.
 %
 % Author: Sebastià V. Amengual (samengual@fb.com)
-% Last Modified: 11/16/2021
+% Last Modified: 11/17/2021
 %
 %
 % TO-DO
@@ -102,7 +101,6 @@ for i = 1:2:length(varargin)
     end
 end
 
-
 % Initialize with default values
 SRIR_data.fs = 48e3;
 SRIR_data.SourcePos = 'S0';
@@ -118,7 +116,6 @@ SRIR_data.RandomDOA = false;
 SRIR_data.MicArray = 'NoArray';
 SRIR_data.ArrayGeometry = [0 0 0];
 SRIR_data.Method = 'SDM';
-SRIR_data.Length = 1.0;
 SRIR_data.Split = true;
 SRIR_data.MixingTime = 0.08;
 SRIR_data.Denoise = true;

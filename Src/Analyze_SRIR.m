@@ -34,6 +34,7 @@ end
 SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(SRIR_data.DSonset:end,:);
 SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end, :);
 SRIR_data.DS_idx = SRIR_data.DS_idx - SRIR_data.DSonset;
+SRIR_data.DSonset = 1;
 
 SRIR_data = Smooth_DOA(SRIR_data);
 
