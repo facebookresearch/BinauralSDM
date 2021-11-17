@@ -93,7 +93,7 @@ listNames = {'fs','Room','SourcePos','ReceiverPos','Raw_RIR','P_RIR','DOA',...
     'Split','MixingTime','Denoise','DenoiseLowFreq','DenoiseHighFreq','PlotDenoisedRIR',...
     'OmniMicLag','DS_idx','FilterRaw','FilterRawLowFreq','FilterRawHighFreq',...
     'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA',...
-    'DSonsetThreshold'};
+    'DSonsetThreshold','CustomPath'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -133,6 +133,7 @@ SRIR_data.DiffN = 26;
 SRIR_data.DiffWinLen = 128;
 SRIR_data.DiffComponent = false;
 SRIR_data.DSonsetThreshold = 0.02;
+SRIR_data.CustomPath = '';
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)

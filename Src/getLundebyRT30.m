@@ -1,6 +1,6 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
-function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, Fs, integrationWin)
+function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, Fs, integrationWin, Tn)
 %getLundebyRT calculates the truncated and energy compensated T30 using the
 %Lundeby method (Acta Acoustica Vol. 81 1995)
 %   getLundebyRT takes in a single channel (N,1) impulse response, the
@@ -14,10 +14,14 @@ function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, F
 
     if nargin < 3
         blockSize = round(0.02*Fs);
-    else
+        Tn = 30;
+    elseif nargin == 3
         blockSize = round(Fs*integrationWin);
+        Tn = 30;
+    else
+        blockSize = round(Fs*integrationWin);      
     end
-    Tn = 30;
+    
     
     energyIR        = roomIR.*roomIR;
     numBlocks       = floor(length(energyIR)/blockSize);

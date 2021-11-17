@@ -8,7 +8,7 @@ function micpos = create_MicGeometry(micArray)
 %           'FRL_5cm', 'FRL_10cm'.
 %
 % Author: Sebastià V. Amengual
-% Last Modified: 4/29/19
+% Last Modified: 11/17/2021
 
 switch upper(micArray)
     case 'TETRAMIC'
@@ -64,9 +64,16 @@ switch upper(micArray)
                   0 -0.7071 -0.7071
                   0 0.7071 -0.7071
                   0 0 0]*0.096/2;
-              
+
+    case 'FRL_10CM_CUSTOMPATH'
+        micpos = [1 0 0 ;
+                 -1 0 0;
+                 0 -0.7071 0.7071
+                 0 0.7071 0.7071
+                 0 -0.7071 -0.7071
+                 0 0.7071 -0.7071
+                 0 0 0]*0.096/2;
+
     otherwise
         error('Invalid microhone array type "%s".', micArray);
-end
-
 end

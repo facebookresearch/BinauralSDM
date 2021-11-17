@@ -43,10 +43,9 @@ function BRIR_data = create_BRIR_data (varargin)
 %               which is only relevant if QuantizeDOAFlag is set - integer
 %               - default: 50.
 %
-
 % Author: Sebastia V. Amengual (samengual@fb.com)
 % Last modified: 11/17/2021
-
+% 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
 %     available it could be used to implement spectral equalization.
@@ -59,7 +58,7 @@ function BRIR_data = create_BRIR_data (varargin)
 listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
     'DestinationPath','Length','Split','MixingTime','AzOrient','ElOrient',...
     'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections',...
-    'DOAAzOffset','DOAElOffset'};
+    'DOAAzOffset','DOAElOffset','BandsPerOctave','EqTxx'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -98,7 +97,8 @@ BRIR_data.Attenuation = 0.0;
 
 BRIR_data.RenderingCondition = 'Original';
 
-BRIR_data.FilterBank_bandsperoctave = 3;
+BRIR_data.BandsPerOctave = 3;
+BRIR_data.EqTxx = 30;
 
 BRIR_data.DOAAzOffset = 0.0;
 BRIR_data.DOAElOffset = 0.0;

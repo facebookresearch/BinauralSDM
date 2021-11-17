@@ -11,7 +11,7 @@ function SaveBRIR(BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR, ang)
 %   - late_BRIR: Angle independent late reverb tail.
 %
 %   Author: Sebastià V. Amengual
-%   Last modified: 11/05/2021
+%   Last modified: 11/17/2021
 
 % create output directory (ignore if it already exists)
 [~, ~] = mkdir(BRIR_data.DestinationPath);
@@ -34,6 +34,4 @@ audiowrite(fullfile(BRIR_data.DestinationPath, ...
 if ~isempty(late_BRIR)
     audiowrite(fullfile(BRIR_data.DestinationPath, 'late_reverb.wav'), ...
         late_BRIR./attenuation, BRIR_data.fs, 'BitsPerSample', 32);
-end
-
 end
