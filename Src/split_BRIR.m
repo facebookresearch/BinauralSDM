@@ -30,6 +30,8 @@ function [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR( ...
 DS_LEN = 256;
 DS_WLENGTH = 32;
 
+disp('Started splitting of BRIR');
+
 % Create a Hann window for the crossfade between DS and ER and LR
 window_hann_DS = hann(DS_WLENGTH);
 window_hann_LR = hann(wlength);
@@ -38,12 +40,20 @@ window_hann_LR = hann(wlength);
 window_DSER = [ones(mixtime*fs-wlength/2,1); window_hann_LR(wlength/2+1:end)];
 
 window_DS = [ones(DS_LEN-DS_WLENGTH/2,1); window_hann_DS(DS_WLENGTH/2+1:end)];
+fprintf(['Window for direct sound of %d samples ', ...
+    '(incl. %d samples fade-out)\n'], ...
+    length(window_DS), DS_WLENGTH/2);
 
-window_ER = [zeros(DS_LEN-DS_WLENGTH/2,1); window_hann_DS(1:DS_WLENGTH/2)];
-window_ER = [window_ER; window_DSER(DS_LEN+1:end)];
+window_ER = [zeros(DS_LEN-DS_WLENGTH/2,1); window_hann_DS(1:DS_WLENGTH/2); ...
+    window_DSER(DS_LEN+1:end)];
+fprintf(['Window for early reflections of %d samples ', ...
+    '(incl. %d samples fade-in, %d samples fade-out)\n'], ...
+    length(window_ER), DS_WLENGTH/2, wlength/2);
 
 window_LR = [zeros(mixtime*fs-wlength/2,1); window_hann_LR(1:wlength/2)];
-window_LR = [window_LR ; ones(length(BRIR_full)-length(window_LR),1)];
+window_LR = [window_LR ; ones(length(BRIR_full)-length(window_LR), 1)];
+fprintf(['Window for late reverberation of %d samples ', ...
+    '(incl. %d samples fade-in)\n'], length(window_LR), wlength/2);
 
 % Extract the BRIRs
 BRIR_DSER = BRIR_TimeData(1:length(window_DSER),:,:) .* window_DSER;
@@ -65,5 +75,7 @@ BRIR_LR = BRIR_full .* window_LR;
 % xlabel('Samples');
 % ylabel('Amplitude');
 % grid on;
+
+fprintf('\n');
 
 end
