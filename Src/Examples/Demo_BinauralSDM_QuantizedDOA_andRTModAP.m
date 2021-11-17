@@ -268,8 +268,7 @@ BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, ...
     BRIR_data.OriginalT30, BRIR_data.DesiredT30, BRIR_data.RTFreqVector);
 
 % Remove leading zeros
-[BRIR_TimeData, BRIR_full] = removeInitialDelay(...
-    BRIR_TimeData, BRIR_full, -20, BRIR_data.MixingTime * BRIR_data.fs);
+[BRIR_TimeData, BRIR_full] = Remove_BRIR_Delay(BRIR_TimeData, BRIR_full, -20);
 
 % Split the BRIR
 [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR(...
