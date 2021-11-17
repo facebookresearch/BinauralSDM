@@ -8,7 +8,7 @@ function micpos = create_MicGeometry(micArray)
 %           'FRL_5cm', 'FRL_10cm'.
 %
 % Author: Sebastià V. Amengual
-% Last Modified: 4/29/19
+% Last Modified: 11/17/2021
 
 switch micArray
     case 'Tetramic'
@@ -72,5 +72,3 @@ switch micArray
     otherwise
         error('You are trying to create the geometry of a non-existent array :(')
 end
-
-

@@ -9,7 +9,7 @@ function SaveRenderingStructs(SRIR_data, BRIR_data)
 %   - BRIR_data: Struct containing BRIR information (see create_BRIR_data)
 %
 %   Author: Sebastià V. Amengual
-%   Last modified: 7/11/19
+%   Last modified: 11/17/2021
 
 if isfield(BRIR_data,'customPath')
     Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' BRIR_data.customPath];

@@ -13,7 +13,7 @@ function SaveBRIR(SRIR_data, BRIR_data, DS_BRIR, early_BRIR, ER_BRIR, late_BRIR,
 %   - late_BRIR: Angle independent late reverb tail.
 %
 %   Author: Sebastià V. Amengual
-%   Last modified: 4/22/19
+%   Last modified: 11/17/2021
 
 if isfield(BRIR_data,'customPath')
     Save_Path = [BRIR_data.DestinationPath  regexprep(BRIR_data.HRTF_Subject,' ','_'), '\' BRIR_data.customPath];

@@ -1,12 +1,11 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
 function [early_BRIR, late_BRIR, DS_BRIR, ER] = split_BRIR(BRIR_TimeData, BRIR_full, mixtime, fs, wlength)
-
 % This function splits a BRIR into its various parts for separate
 % auralization of direct sound, early reflections and late reverberation.
 % The separation between different BRIR sections is done using a Hann
 % window to avoid artifacts.
-
+% 
 % Inputs: 
 %       - BRIR: Binaural room impulse response to be split
 %       - P_IR: Ref. pressure impulse response (only to detect direct sound)
@@ -20,11 +19,10 @@ function [early_BRIR, late_BRIR, DS_BRIR, ER] = split_BRIR(BRIR_TimeData, BRIR_f
 %       - ER: from sample 257 to mixing time (only early reflections)
 %
 % Author: Sebastia V. Amengual
-% Last modified: 01/04/2018
+% Last modified: 11/17/2021
 %
 % To-Do:    - More informed method to separate DS and ER, rather than just
 %               windowing after 256 samples
-
 
 % Create a Hann window for the crossfade between ER and Late Reverb.
 hann_window = hann(wlength);
@@ -63,4 +61,3 @@ window_ER_noDS = [window_ER_noDS; window_ER(DS_wlength+1:end)];
 
 % Retrieve early reflections (without direct sound)
 ER = BRIR_TimeData(1:length(window_ER_noDS),:,:).*window_ER_noDS;
-

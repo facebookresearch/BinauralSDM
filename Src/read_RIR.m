@@ -7,7 +7,7 @@ function SRIR_data = read_RIR(SRIR_data)
 % 192 kHz), and FRL room acoustics array.
 %
 % Author: Sebastià V. Amengual
-% Last modified: 12/19/18
+% Last modified: 11/17/2021
 
 switch SRIR_data.MicArray
     case 'Eigenmike'

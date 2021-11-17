@@ -12,9 +12,6 @@ function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, F
 % and the acmus matlab package. Reimplemented by Joshua Marcley (2019)
 % using algorithm described in https://pdfs.semanticscholar.org/5841/897c265b08addf22dbfaa6da969875e376e4.pdf
 
-
-
-
     if nargin < 3
         blockSize = round(0.02*Fs);
         Tn = 30;

@@ -19,7 +19,7 @@ function EqBRIR = ModifyReverbSlope(BRIR_Data,BRIR_TimeData, OriginalT60, Desire
 %       - EqBRIR: BRIR with the modified reverb slope.
 %
 %   Author: Sebastia V. Amengual
-%   Last modified: 04/15/2019
+%   Last modified: 11/17/2021
 
 % Need to regenerate the filterbank in case the corrected BRIR is longer
 % than the mixing time (special case for the late reverb tail).

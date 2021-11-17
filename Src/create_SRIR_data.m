@@ -57,7 +57,7 @@ function SRIR_data = create_SRIR_data(varargin)
 %               '../../Data/RIRs/'
 %
 % Author: Sebastià V. Amengual (samengual@fb.com)
-% Last Modified: 1/6/20
+% Last Modified: 11/17/2021
 %
 %
 % TO-DO

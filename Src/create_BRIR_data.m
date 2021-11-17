@@ -32,11 +32,10 @@ function BRIR_data = create_BRIR_data (varargin)
 %       quantized. - default: 0.
 %       - DOADirections: Number of directions to quantize DOA information.
 %       This is only relevant if QuantizeDOAFlag == 1 - default: 50. 
-%
-
+% 
 % Author: Sebastia V. Amengual (samengual@fb.com)
-% Last modified: 04/30/2019
-
+% Last modified: 11/17/2021
+% 
 % To-Do:    
 %   - Spectral equalization options: If a reference measured BRIR is
 %   available it could be used to implement spectral equalization.
