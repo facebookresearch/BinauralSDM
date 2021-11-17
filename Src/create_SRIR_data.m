@@ -88,7 +88,7 @@ listNames = {'fs','Room','SourcePos','ReceiverPos','Raw_RIR','P_RIR','DOA',...
     'DOASmooth','RandomDOA','MicArray','ArrayGeometry','Method','Length',...
     'Split','MixingTime','Denoise','DenoiseLowFreq','DenoiseHighFreq','PlotDenoisedRIR',...
     'OmniMicLag','DS_idx','FilterRaw','FilterRawLowFreq','FilterRawHighFreq',...
-    'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA'};
+    'Database_Path','DiffComponent','DiffWinLen','DiffN','DiffFunc','AlignDOA','CustomPath'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -129,6 +129,7 @@ SRIR_data.DiffN = 26;
 SRIR_data.DiffWinLen = 128;
 SRIR_data.DiffComponent = 0;
 SRIR_data.DSonsetThreshold = 0.02;
+SRIR_data.CustomPath = '';
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)
@@ -150,6 +151,8 @@ for i = 1:length(listNames)
             SRIR_data.Method = varargin{j+1};
         elseif strcmp(listNames{i},'Database_Path')
             SRIR_data.Database_Path = varargin{j+1};
+        elseif strcmp(listNames{i},'CustomPath')
+            SRIR_data.CustomPath = varargin{j+1};
         end
     else
         disp([listNames{i} ' initialized with default values']);

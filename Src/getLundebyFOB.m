@@ -1,6 +1,6 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
-function [RTs, fcentre] = getLundebyFOB(signal, Fs, bandsPerOctave)
+function [RTs, fcentre] = getLundebyFOB(signal, Fs, bandsPerOctave, Tn)
 % Returns the estimated Reverberation Time of a RIR in 1 or 1/3 octave
 % bands.
 
@@ -23,7 +23,7 @@ function [RTs, fcentre] = getLundebyFOB(signal, Fs, bandsPerOctave)
         H_freq = fft(signal,2*snfft);
         G = fft(g,2*snfft);
         sigFilt = real(ifft(G(:,iOb).*H_freq));
-        RTs(iOb) = getLundebyRT30(sigFilt, Fs);
+        RTs(iOb) = getLundebyRT30(sigFilt, Fs,0.02,Tn);
         title(num2str(iOb))
     end
 

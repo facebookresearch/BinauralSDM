@@ -12,7 +12,7 @@ if length(F) < 200
     F_upsampled = logspace(0,log10(fs/2),200)/(fs/2);
     F_upsampled(1) = 0;
     F_upsampled(end) = 1;
-    A_upsampled = interp1(F,A,F_upsampled,'cubic');
+    A_upsampled = interp1(F,A,F_upsampled,'linear');
 else
     F_upsampled = F;
     A_upsampled = A;

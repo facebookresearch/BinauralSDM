@@ -56,7 +56,7 @@ MixingTime      = 0.08;                 % Mixing time (in seconds) of the room f
                                         % as a single direction independent reverb tail and AP rendering will be applied.
 DOASmooth       = 16;                   % Window length (in samples) for smoothing of DOA information. 16 samples is a good compromise for noise 
                                         % reduction and time resolution.
-BRIRLength      = 0.7;                  % Duration of the rendered BRIRs (in seconds)
+BRIRLength      = 0.5;                  % Duration of the rendered BRIRs (in seconds)
 DenoiseFlag     = 1;                    % Flag to perform noise floor compensation on the multichannel RIR. This ensures that the RIR decays 
                                         % progressively and removes rendering artifacts due to high noise floor in the RIR.
 FilterRawFlag   = 1;                    % Flag to perform band pass filtering on the multichannel RIR prior to DOA estimation. If active, only
@@ -111,6 +111,8 @@ BRIRAtten       = 30;               % Attenuation of the rendered BRIRs (in dB).
 AzOrient        = (-180:2:180)';    % Render BRIRs every 2 degrees in azimuth
 ElOrient        = (-90:5:90)';      % Render BRIRs every 5 degrees in elevation
 DestinationPath = 'C:/Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved
+BandsPerOctave  = 1;                % Bands per octave used for RT60 equalization
+EqTxx           = 20;                % Txx used for RT60 equalization. For very small rooms or low SNR measurements, T20 is recommended. Otherwise, T30 is recommended.
 
 % Initialize re-synthesized BRIR struct
 BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
@@ -125,7 +127,9 @@ BRIR_data = create_BRIR_data('MixingTime',MixingTime,...
                              'QuantizeDOAFlag',QuantizeDOAFlag,...
                              'DOADirections',DOADirections,...
                              'DestinationPath',DestinationPath,...
-                             'fs',fs);
+                             'fs',fs,...
+                             'BandsPerOctave',1,...
+                             'EqTxx',20);
 
 % Read HRTF dataset for re-synthesis
 HRTF = Read_HRTF(BRIR_data);
@@ -164,7 +168,7 @@ BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR SRIR_data.P_RIR];
 
 % Get the desired T30 from the Pressure RIR and the actual T30 from one
 % rendered BRIR
-[DesiredT30, OriginalT30, RTFreqVector] = GetReverbTime(SRIR_data, PreBRIR,3); 
+[DesiredT30, OriginalT30, RTFreqVector] = GetReverbTime(SRIR_data, PreBRIR,BRIR_data.BandsPerOctave,BRIR_data.EqTxx); 
 
 % -----------------------------------------------------------------------
 % 4. Render BRIRs with RTMod compensation for the specified directions

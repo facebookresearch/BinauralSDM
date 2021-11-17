@@ -48,7 +48,7 @@ function BRIR_data = create_BRIR_data (varargin)
 % Check input arguments
 listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
     'DestinationPath','Length','Split','MixingTime','AzOrient','ElOrient',...
-    'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections'};
+    'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections','BandsPerOctave','EqTxx'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -87,7 +87,8 @@ BRIR_data.Attenuation = 0;
 
 BRIR_data.RenderingCondition = 'Original';
 
-BRIR_data.FilterBank_bandsperoctave = 3;
+BRIR_data.BandsPerOctave = 3;
+BRIR_data.EqTxx = 30;
 
 BRIR_data.QuantizeDOAFlag = 0;
 BRIR_data.DOADirections = 50;
@@ -118,7 +119,6 @@ for i = 1:length(listNames)
     else
         disp([listNames{i} ' initialized with default values']);
     end
-    i
 end
 
 [rot_az, rot_el] = meshgrid(BRIR_data.AzOrient,BRIR_data.ElOrient);

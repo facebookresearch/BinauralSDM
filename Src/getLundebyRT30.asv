@@ -18,11 +18,8 @@ function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, F
     if nargin < 3
         blockSize = round(0.02*Fs);
         Tn = 30;
-    elseif nargin == 3
+    elseif 
         blockSize = round(Fs*integrationWin);
-        Tn = 30;
-    else
-        blockSize = round(Fs*integrationWin);      
     end
     
     
