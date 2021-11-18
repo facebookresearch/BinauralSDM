@@ -12,7 +12,7 @@ if isempty(BRIR_idx)
 end
 
 % determine IR lengths
-for ear = 1 : 2
+for ear = 1 : size(BRIR_DS, 2)
     len_DS(ear, :) = [find(BRIR_DS(:, ear, BRIR_idx), 1, 'first') - 1; ...
         find(BRIR_DS(:, ear, BRIR_idx), 1, 'last')];
     len_ER(ear, :) = [find(BRIR_ER(:, ear, BRIR_idx), 1, 'first') - 1; ...
@@ -44,18 +44,19 @@ dir_str = sprintf('BRIR_az%del%d', BRIR_data.Directions(BRIR_idx, :));
 fig_name = sprintf('%s_%s', Plot_data.name, dir_str);
 fig_name = strrep(fig_name, '\', '');
 fig = figure('NumberTitle', 'off', 'Name', fig_name);
-fig.Position(3:4) = fig.Position(3:4) * 2;
+fig.Position(3) = fig.Position(3) * size(BRIR_DS, 2);
+fig.Position(4) = fig.Position(4) * 2;
 
-tl = tiledlayout(2, 2, 'TileSpacing', 'tight', 'Padding', 'tight');
+tl = tiledlayout(size(BRIR_DS, 2), 2, 'TileSpacing', 'tight', 'Padding', 'tight');
 title(tl, Plot_data.name);
-for ear = 1 : 2
+for ear = 1 : size(BRIR_DS, 2)
     ax(ear) = nexttile(tl);
     plot(t, mag2db(abs(BRIR_DS(:, ear, BRIR_idx))), 'Color', Plot_data.colors(2, :));
     hold on;
     plot(t, mag2db(abs(BRIR_ER(:, ear, BRIR_idx))), 'Color', Plot_data.colors(3, :));
     plot(t, mag2db(abs(BRIR_LR(:, ear))), 'Color', Plot_data.colors(4, :));
     xlim([0, t(end)]);
-    ylim([BRIR_max - 90, BRIR_max]);
+    ylim([BRIR_max - 80, BRIR_max]);
     xlabel('Time [ms]');
     ylabel('Energy Time Curve [dB]');
     grid on;
@@ -76,7 +77,7 @@ end
 set(ax(end), 'YAxisLocation', 'right');
 linkaxes(ax, 'xy');
 
-for ear = 1 : 2
+for ear = 1 : size(BRIR_DS, 2)
     ax(ear) = nexttile(tl);
     semilogx(f, BRTF_full(:, ear, BRIR_idx), ...
         'Color', Plot_data.colors(1, :), 'LineWidth', Plot_data.linewidth(1) / 2);

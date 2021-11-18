@@ -244,22 +244,16 @@ clear BRIR_Pre;
 % -----------------------------------------------------------------------
 % 5. Render BRIRs with RTMod compensation for the specified directions
 
-% Initialize BRIR matrix
-BRIR_TimeData = zeros((BRIR_data.MixingTime + BRIR_data.TimeGuard) * BRIR_data.fs, ...
-    2, length(BRIR_data.Directions));
-
-% Render BRIRs
 nDirs = length(BRIR_data.Directions);
 
 % Render early reflections
 hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
-parfor iDir = 1:nDirs
+parfor iDir = 1 : nDirs
     hbar.iterate(); %#ok<PFBNS>
     BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
         HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir, :), false);
-    BRIR_TimeDataTemp = ModifyReverbSlope(BRIR_data, BRIR_TimeDataTemp, ...
-        BRIR_data.OriginalT30, BRIR_data.DesiredT30, BRIR_data.RTFreqVector);
-    BRIR_TimeData(:,:,iDir) = BRIR_TimeDataTemp;
+    BRIR_TimeDataTemp = Modify_Reverb_Slope(BRIR_data, BRIR_TimeDataTemp);
+    BRIR_TimeData(:, :, iDir) = BRIR_TimeDataTemp;
 end
 close(hbar);
 clear iDir hbar;
@@ -267,8 +261,7 @@ clear iDir hbar;
 % Render late reverb
 BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
     HRTF_TransL, HRTF_TransR, [0, 0], true);
-BRIR_full = ModifyReverbSlope(BRIR_data, BRIR_full, ...
-    BRIR_data.OriginalT30, BRIR_data.DesiredT30, BRIR_data.RTFreqVector);
+BRIR_full = Modify_Reverb_Slope(BRIR_data, BRIR_full, Plot_data);
 
 % Remove leading zeros
 [BRIR_TimeData, BRIR_full] = Remove_BRIR_Delay(BRIR_TimeData, BRIR_full, -20);
@@ -301,15 +294,15 @@ if Plot_data.PlotAnalysisFlag
 end
 
 hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
-for iDir = 1:nDirs
+for iDir = 1 : nDirs
     hbar.iterate();
     if iDir == 1 % export identical late reverberation only once
         BRIR_LR_export = BRIR_LR;
     else
         BRIR_LR_export = [];
     end
-    SaveBRIR(BRIR_data, BRIR_DS(:,:,iDir), BRIR_DSER(:,:,iDir), ...
-        BRIR_ER(:,:,iDir), BRIR_LR_export, BRIR_data.Directions(iDir,:));
+    SaveBRIR(BRIR_data, BRIR_DS(:, :, iDir), BRIR_DSER(:, :, iDir), ...
+        BRIR_ER(:, :, iDir), BRIR_LR_export, BRIR_data.Directions(iDir, :));
 end
 hbar.iterate();
 SaveRenderingStructs(SRIR_data, BRIR_data);
