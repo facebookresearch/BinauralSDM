@@ -70,13 +70,21 @@ BRIR_data.FilterBank_snfft = (BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_dat
 % Determine BRIR target length, if it has not been specified
 if ~BRIR_data.Length
 %     [T30, ~, ~] = getLundebyRT30(SRIR_data.P_RIR, SRIR_data.fs);
-    [T30, ~] = getLundebyFOB(SRIR_data.P_RIR, SRIR_data.fs, 3);
-    T30 = max(T30);
+    [RT, ~] = getLundebyFOB(SRIR_data.P_RIR, SRIR_data.fs, ...
+        BRIR_data.BandsPerOctave, BRIR_data.EqTxx);
+    RT = max(RT(BRIR_data.BandsPerOctave+1:end-BRIR_data.BandsPerOctave-1)); % ignore highest and lowest octave
     
     % remaining direct sound onset + estimated RT
-    BRIR_data.Length = SRIR_data.DS_idx / SRIR_data.fs + T30;
+    BRIR_data.Length = SRIR_data.DS_idx / SRIR_data.fs + RT;
     fprintf('Chose %.2f s BRIR target length based on SRIR T30 analysis.\n', ...
         BRIR_data.Length);
+end
+
+% Extend SRIR data since it will be required during BRIR synthesis
+BRIR_length = ceil(BRIR_data.Length * SRIR_data.fs);
+if BRIR_length > length(SRIR_data.P_RIR)
+    SRIR_data.DOA = [SRIR_data.DOA; repmat([1, 0, 0], BRIR_length - length(SRIR_data.DOA), 1)];
+    SRIR_data.P_RIR(end:BRIR_length) = 0;
 end
 
 fprintf('\n');

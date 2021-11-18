@@ -24,30 +24,26 @@ function BRIR = Synthesize_SDM_Binaural(...
 %       - BRIR: Re-synthesized binaural room impulse response
 %
 % Author: Sebastia V. Amengual (samengual@fb.com)
-% Last modified: 04/15/2019
+% Last modified: 11/17/2021
 
 % Synthesize the spatial impulse response with NLS as binaural
-DOA_rad = zeros(size(SRIR_data.DOA));
-
-az_deg = rot(1);
-el_deg = rot(2);
-
-DOA_cart = (rotz(az_deg)*roty(-el_deg)*SRIR_data.DOA')';
-[DOA_rad(:,1), DOA_rad(:,2), DOA_rad(:,3)] = cart2sph(DOA_cart(:,1),DOA_cart(:,2),DOA_cart(:,3));
-[DOA_cart(:,1), DOA_cart(:,2), DOA_cart(:,3)] = sph2cart(DOA_rad(:,1),DOA_rad(:,2),1);
 
 L_HRTF = length(HRTF_TransL(:,1));
-
 Left_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 Right_RIR = zeros(length(SRIR_data.P_RIR)+L_HRTF-1,1);
 
 if full
-    N = BRIR_data.Length*BRIR_data.fs;
+    N = BRIR_data.Length;
 else
-    N = (BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs;
+    N = BRIR_data.MixingTime + BRIR_data.TimeGuard;
 end
+N = ceil(N * BRIR_data.fs);
+ 
+az_deg = rot(1);
+el_deg = rot(2);
+DOA_cart = (rotz(az_deg) * roty(-el_deg) * SRIR_data.DOA')';
 
-[idx, ~] = knnsearch(BRIR_data.HRTF_cartDir, DOA_cart(1:N,:));
+[idx, ~] = knnsearch(BRIR_data.HRTF_cartDir, DOA_cart(1:N, :));
 
 if SRIR_data.DiffComponent
     P_IR = SRIR_data.SpecRIR;
