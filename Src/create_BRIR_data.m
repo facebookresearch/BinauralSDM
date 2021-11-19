@@ -47,6 +47,9 @@ function BRIR_data = create_BRIR_data (varargin)
 %       - EqTxx: Txx used for RT60 equalization. For very small rooms or 
 %               low SNR measurements, T20 is recommended. Otherwise, T30 is 
 %               recommended - integer (20 or 30) - default: 30.
+%       - RTModRegFreq: Regularization frequncy in Hz above which the RTmod
+%               modification of the late reverberation should be
+%               regularized - float - default: false.
 %
 % Author: Sebastia V. Amengual (samengual@fb.com)
 % Last modified: 11/17/2021
@@ -63,7 +66,7 @@ function BRIR_data = create_BRIR_data (varargin)
 listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
     'DestinationPath','Length','Split','MixingTime','AzOrient','ElOrient',...
     'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections',...
-    'DOAAzOffset','DOAElOffset','BandsPerOctave','EqTxx'};
+    'DOAAzOffset','DOAElOffset','BandsPerOctave','EqTxx','RTModRegFreq'};
 
 for i = 1:2:length(varargin)
     if ~any(strcmpi(listNames,varargin{i}))
@@ -102,13 +105,14 @@ BRIR_data.Attenuation = 0.0;
 
 BRIR_data.RenderingCondition = 'Original';
 
-BRIR_data.BandsPerOctave = 3;
-BRIR_data.EqTxx = 30;
-
 BRIR_data.DOAAzOffset = 0.0;
 BRIR_data.DOAElOffset = 0.0;
 BRIR_data.QuantizeDOAFlag = false;
 BRIR_data.DOADirections = 50;
+
+BRIR_data.BandsPerOctave = 3;
+BRIR_data.EqTxx = 30;
+BRIR_data.RTModRegFreq = false;
 
 % Apply input arguments on BRIR_data struct
 for i = 1:length(listNames)

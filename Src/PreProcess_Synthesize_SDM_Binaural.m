@@ -73,6 +73,7 @@ if ~BRIR_data.Length
     [RT, ~] = getLundebyFOB(SRIR_data.P_RIR, SRIR_data.fs, ...
         BRIR_data.BandsPerOctave, BRIR_data.EqTxx);
     RT = max(RT(BRIR_data.BandsPerOctave+1:end-BRIR_data.BandsPerOctave-1)); % ignore highest and lowest octave
+%     RT = max(RT);
     
     % remaining direct sound onset + estimated RT
     BRIR_data.Length = SRIR_data.DS_idx / SRIR_data.fs + RT;

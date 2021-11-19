@@ -28,6 +28,23 @@ if length(BRIR) > length(BRIR_data.FilterBank_g)
         BRIR_data.FilterBank_minFreq , BRIR_data.FilterBank_maxFreq);
 end
 
+% Regularize RT modification
+if BRIR_data.RTModRegFreq && ~isfield(BRIR_data, 'DesiredT30_unlimited')
+    BRIR_data.DesiredT30_unlimited = BRIR_data.DesiredT30;
+    % limit modification to not amplify
+    % hf_bands = BRIR_data.RTFreqVector > 9e3;
+    % BRIR_data.DesiredT30(hf_bands) = min([BRIR_data.DesiredT30(hf_bands), ...
+    %     BRIR_data.OriginalT30(hf_bands)], [], 2);
+    % limit modification to follow slope of original
+    hf_index = find(BRIR_data.RTFreqVector > BRIR_data.RTModRegFreq, 1, 'first');
+    if hf_index < length(BRIR_data.RTFreqVector)
+        hf_index = hf_index + find(diff(BRIR_data.DesiredT30(hf_index:end)) > 0, 1, 'first');
+    end
+    hf_index = hf_index - 1;
+    BRIR_data.DesiredT30(hf_index:end) = cumsum(...
+        [BRIR_data.DesiredT30(hf_index); diff(BRIR_data.OriginalT30(hf_index:end))]);
+end
+
 d0 = log(1e6) ./ (2 * BRIR_data.OriginalT30);
 d1 = log(1e6) ./ (2 * BRIR_data.DesiredT30);
 d0(isnan(d1)) = 0;
@@ -95,8 +112,14 @@ if ~isempty(Plot_data) && Plot_data.PlotAnalysisFlag
     linkaxes(ax, 'xy');
     
     nexttile(tl, [1, 2]);
+    lgd_str = {'before', 'after'};
     semilogx(BRIR_data.RTFreqVector, BRIR_data.OriginalT30, 'LineWidth', 2, 'Color', 'k');
     hold on;
+    if BRIR_data.RTModRegFreq
+        semilogx(BRIR_data.RTFreqVector, BRIR_data.DesiredT30_unlimited, ...
+            'LineStyle', ':', 'LineWidth', 2, 'Color', Plot_data.colors(4, :));
+        lgd_str = {lgd_str{1}, 'after (unregularized)', lgd_str{2}};
+    end
     semilogx(BRIR_data.RTFreqVector, BRIR_data.DesiredT30, 'LineWidth', 2, 'Color', Plot_data.colors(4, :));
     xlim([BRIR_data.RTFreqVector(1) / 1.1, BRIR_data.RTFreqVector(end) * 1.1]);
     yl = ylim;
@@ -107,8 +130,7 @@ if ~isempty(Plot_data) && Plot_data.PlotAnalysisFlag
     xticklabels(string(ceil(BRIR_data.RTFreqVector)));
     xlabel('Frequency band [Hz]');
     ylabel('Reverberation time [s]');
-    lgd = legend({'before', 'after'}, ...
-        'Location', 'SouthWest', 'Orientation', 'horizontal');
+    lgd = legend(lgd_str, 'Location', 'SouthWest', 'Orientation', 'horizontal');
     title(lgd, 'Late reverberation RTmod');
     grid on;
     
