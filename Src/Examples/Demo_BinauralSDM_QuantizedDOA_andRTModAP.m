@@ -265,28 +265,25 @@ BRIR_late = Modify_Reverb_Slope(BRIR_data, BRIR_late, Plot_data);
 % Remove leading zeros
 [BRIR_early, BRIR_late] = Remove_BRIR_Delay(BRIR_early, BRIR_late, -20);
 
-% Split the BRIR
-[BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR(...
-    BRIR_early, BRIR_late, BRIR_data.MixingTime, BRIR_data.fs, 256);
-clear BRIR_early BRIR_late;
-
 % -----------------------------------------------------------------------
 % 6. Apply AP processing for the late reverb
 
 % AllPass filtering for the late reverb (increasing diffuseness and
 % smoothing out the EDC)
-BRIR_data.allpass_delays = [37, 113, 215, 347]; % in samples
-BRIR_data.allpass_RT = [0.1, 0.1, 0.1, 0.1];    % in seconds
+BRIR_data.allpass_delays = [37, 113, 215];  % in samples
+BRIR_data.allpass_RT     = [0.1, 0.1, 0.1]; % in seconds
 
-for iAllPass = 1:3
-    BRIR_LR(:,1) = allpass_filter(BRIR_LR(:,1), ...
-        BRIR_data.allpass_delays(iAllPass), 0.1, BRIR_data.fs);
-    BRIR_LR(:,2) = allpass_filter(BRIR_LR(:,2), ...
-        BRIR_data.allpass_delays(iAllPass), 0.1, BRIR_data.fs);
-end; clear iAllPass;
+BRIR_late = Apply_Allpass(BRIR_late, BRIR_data);
 
 % -----------------------------------------------------------------------
-% 7. Save BRIRs
+% 7. Split the BRIRs into components by time windowing
+
+[BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR(...
+    BRIR_early, BRIR_late, BRIR_data.MixingTime, BRIR_data.fs, 256);
+clear BRIR_early BRIR_late;
+
+% -----------------------------------------------------------------------
+% 8. Save BRIRs
 
 if Plot_data.PlotAnalysisFlag
     Plot_BRIR(BRIR_data, BRIR_DS, BRIR_ER, BRIR_LR, Plot_data);
