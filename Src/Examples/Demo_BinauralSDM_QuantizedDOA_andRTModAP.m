@@ -197,10 +197,10 @@ end
 % 1. Pre-processing operations (massage HRTF directions, resolve DOA NaNs).
 
 % Read HRTF dataset for re-synthesis
-HRTF_data = Read_HRTF(BRIR_data);
+HRIR_data = Read_HRTF(BRIR_data);
 
-[SRIR_data, BRIR_data, HRTF_data, HRTF_TransL, HRTF_TransR] = ...
-    PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRTF_data);
+[SRIR_data, BRIR_data, HRIR_data, HRIR] = ...
+    PreProcess_Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRIR_data);
 
 % -----------------------------------------------------------------------
 % 2. Rotate DOA information, if required
@@ -231,8 +231,7 @@ end
 
 % Synthesize one direction to extract the reverb compensation - solving the
 % SDM synthesis spectral whitening
-BRIR_Pre = Synthesize_SDM_Binaural(...
-    SRIR_data, BRIR_data, HRTF_TransL, HRTF_TransR, [0, 0], true);
+BRIR_Pre = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRIR, [0, 0], true);
 
 % Using the pressure RIR as a reference for the reverberation compensation
 BRIR_data.ReferenceBRIR = [SRIR_data.P_RIR, SRIR_data.P_RIR];
@@ -252,26 +251,24 @@ nDirs = size(BRIR_data.Directions, 1);
 hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
 parfor iDir = 1 : nDirs
     hbar.iterate(); %#ok<PFBNS>
-    BRIR_TimeDataTemp = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
-        HRTF_TransL, HRTF_TransR, BRIR_data.Directions(iDir, :), false);
-    BRIR_TimeDataTemp = Modify_Reverb_Slope(BRIR_data, BRIR_TimeDataTemp);
-    BRIR_TimeData(:, :, iDir) = BRIR_TimeDataTemp;
+    BRIR_early_temp = Synthesize_SDM_Binaural( ...
+        SRIR_data, BRIR_data, HRIR, BRIR_data.Directions(iDir, :), false);
+    BRIR_early(:, :, iDir) = Modify_Reverb_Slope(BRIR_data, BRIR_early_temp);
 end
 close(hbar);
 clear iDir hbar;
 
 % Render late reverb
-BRIR_full = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, ...
-    HRTF_TransL, HRTF_TransR, [0, 0], true);
-BRIR_full = Modify_Reverb_Slope(BRIR_data, BRIR_full, Plot_data);
+BRIR_late = Synthesize_SDM_Binaural(SRIR_data, BRIR_data, HRIR, [0, 0], true);
+BRIR_late = Modify_Reverb_Slope(BRIR_data, BRIR_late, Plot_data);
 
 % Remove leading zeros
-[BRIR_TimeData, BRIR_full] = Remove_BRIR_Delay(BRIR_TimeData, BRIR_full, -20);
+[BRIR_early, BRIR_late] = Remove_BRIR_Delay(BRIR_early, BRIR_late, -20);
 
 % Split the BRIR
 [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR(...
-    BRIR_TimeData, BRIR_full, BRIR_data.MixingTime, BRIR_data.fs, 256);
-clear BRIR_full;
+    BRIR_early, BRIR_late, BRIR_data.MixingTime, BRIR_data.fs, 256);
+clear BRIR_early BRIR_late;
 
 % -----------------------------------------------------------------------
 % 6. Apply AP processing for the late reverb

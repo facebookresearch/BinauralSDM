@@ -1,7 +1,7 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
 function [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR( ...
-    BRIR_TimeData, BRIR_full, mixtime, fs, wlength)
+    BRIR_early, BRIR_late, mixtime, fs, wlength)
 
 % This function splits a BRIR into its various parts for separate
 % auralization of direct sound, early reflections and late reverberation.
@@ -9,8 +9,8 @@ function [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR( ...
 % window to avoid artifacts.
 
 % Inputs: 
-%       - BRIR_TimeData: Binaural room impulse response to be split
-%       - BRIR_full: Ref. pressure impulse response (only to detect direct sound)
+%       - BRIR_early: Binaural room impulse response to be split
+%       - BRIR_late: Ref. pressure impulse response (only to detect direct sound)
 %       - mixtime: time where the fadeout-fadein hann windows intersect (in seconds).
 %       - fs: sampling rate of the impulse responses
 %       - wlength: duration of the hann window
@@ -21,7 +21,7 @@ function [BRIR_DSER, BRIR_LR, BRIR_DS, BRIR_ER] = Split_BRIR( ...
 %       - BRIR_ER: from sample 257 to mixing time (only early reflections)
 %
 % Author: Sebastia V. Amengual
-% Last modified: 11/09/2021
+% Last modified: 11/19/2021
 %
 % To-Do:    - More informed method to separate DS and ER, rather than just
 %               windowing after 256 samples
@@ -51,15 +51,15 @@ fprintf(['Window for early reflections of %d samples ', ...
     length(window_ER), DS_WLENGTH/2, wlength/2);
 
 window_LR = [zeros(mixtime*fs-wlength/2,1); window_hann_LR(1:wlength/2)];
-window_LR = [window_LR ; ones(length(BRIR_full)-length(window_LR), 1)];
+window_LR = [window_LR ; ones(length(BRIR_late)-length(window_LR), 1)];
 fprintf(['Window for late reverberation of %d samples ', ...
     '(incl. %d samples fade-in)\n'], length(window_LR), wlength/2);
 
 % Extract the BRIRs
-BRIR_DSER = BRIR_TimeData(1:length(window_DSER),:,:) .* window_DSER;
-BRIR_DS = BRIR_TimeData(1:length(window_DS),:,:) .* window_DS;
-BRIR_ER = BRIR_TimeData(1:length(window_ER),:,:) .* window_ER;
-BRIR_LR = BRIR_full .* window_LR;
+BRIR_DSER = BRIR_early(1:length(window_DSER),:,:) .* window_DSER;
+BRIR_DS = BRIR_early(1:length(window_DS),:,:) .* window_DS;
+BRIR_ER = BRIR_early(1:length(window_ER),:,:) .* window_ER;
+BRIR_LR = BRIR_late .* window_LR;
 
 % % plot windows
 % fig = figure('NumberTitle', 'off', 'Name', 'Windows');
