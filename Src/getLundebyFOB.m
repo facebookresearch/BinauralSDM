@@ -24,7 +24,6 @@ for iOb = 1 : size(g, 2)
     G = fft(g, 2*snfft);
     sigFilt = real(ifft(G(:, iOb) .* H_freq));
     RTs(iOb) = getLundebyRT30(sigFilt, Fs, 0.02, Tn);
-    title(num2str(iOb))
 end
 
 end
