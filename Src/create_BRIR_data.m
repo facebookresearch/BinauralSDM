@@ -42,6 +42,11 @@ function BRIR_data = create_BRIR_data (varargin)
 %       - DOADirections: Number of directions to quantize DOA information,
 %               which is only relevant if QuantizeDOAFlag is set - integer
 %               - default: 50.
+%       - BandsPerOctave: Bands per octave used for RT60 equalization -
+%               integer (1 or 3) - default: 3.
+%       - EqTxx: Txx used for RT60 equalization. For very small rooms or 
+%               low SNR measurements, T20 is recommended. Otherwise, T30 is 
+%               recommended - integer (20 or 30) - default: 30.
 %
 % Author: Sebastia V. Amengual (samengual@fb.com)
 % Last modified: 11/17/2021
