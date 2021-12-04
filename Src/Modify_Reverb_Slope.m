@@ -91,7 +91,7 @@ if ~isempty(Plot_data) && Plot_data.PlotAnalysisFlag
     fig.Position(3:4) = fig.Position(3:4) * 2;
     
     tl = tiledlayout(3, 2, 'TileSpacing', 'tight', 'Padding', 'tight');
-    title(tl, Plot_data.name);
+    title(tl, Plot_data.name, 'Interpreter', 'none');
     
     ax(1) = nexttile(tl);
     plot(t, mag2db(abs(BRIR_plot)), 'Color', 'k');

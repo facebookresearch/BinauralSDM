@@ -4,11 +4,11 @@ function Plot_DOA(SRIR_data, Plot_data, fig_name)
 
 PLOT_FMT = 'pdf';
 
-fig_name = strrep(fig_name, '\', '');
-
 % remember and set interpreter for visualization purposes
 default_intpreter = get(0, 'DefaultTextInterpreter');
 set(0, 'DefaultTextInterpreter', 'Latex');
+default_name = Plot_data.name;
+Plot_data.name = strrep(Plot_data.name, '_', '\_');
 
 spatioTemporalVisualization({SRIR_data.P_RIR}, {SRIR_data.DOA}, Plot_data);
 fig = gcf;
@@ -18,6 +18,7 @@ drawnow;
 
 % reset interpreter
 set(0, 'DefaultTextInterpreter', default_intpreter); 
+Plot_data.name = default_name;
 
 if Plot_data.PlotExportFlag
     % create target directory if it doesn't exist

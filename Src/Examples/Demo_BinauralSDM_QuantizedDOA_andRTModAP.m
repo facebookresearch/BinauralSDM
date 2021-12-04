@@ -140,8 +140,7 @@ ExportDSERsFlag  = true;            % Flag to determine if BRIRs should be expor
 DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved.
 
 % Append configuration to destination path
-DestinationPath = fullfile(DestinationPath, ...
-    strrep(HRIR_Subject, ' ', '_'), ...
+DestinationPath = fullfile(DestinationPath, strrep(HRIR_Subject, ' ', '_'), ...
     sprintf('%s_%s_%s', SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos), ...
     NamingCond);
 
@@ -174,8 +173,7 @@ clear HRIR_Subject HRIR_Type HRIR_Path BandsPerOctave EqTxx RTModRegFreq ...
 % Initialize visualization struct (from SDM Toolbox, with additions)
 Plot_data = createVisualizationStruct(...
     'fs', SRIR_data.fs, 'DefaultRoom', 'Small', ... % or 'VerySmall, 'Medium', 'Large'
-    'name', strrep(sprintf('%s_%s_%s', ...
-    SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos), '_', '\_'));
+    'name', sprintf('%s_%s_%s', SRIR_data.Room, SRIR_data.SourcePos, SRIR_data.ReceiverPos));
 Plot_data.PlotAnalysisFlag = PlotAnalysisFlag;
 Plot_data.PlotExportFlag = PlotExportFlag;
 Plot_data.DestinationPath = BRIR_data.DestinationPath;
@@ -253,7 +251,8 @@ clear BRIR_Pre;
 nDirs = size(BRIR_data.Directions, 1);
 
 % Render early reflections
-hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...');
+hbar = parfor_progressbar(nDirs, 'Please wait, rendering (step 1/2) ...', ...
+    'Name', Plot_data.name);
 parfor iDir = 1 : nDirs
     hbar.iterate(); %#ok<PFBNS>
     BRIR_early_temp = Synthesize_SDM_Binaural( ...
@@ -294,7 +293,8 @@ if Plot_data.PlotAnalysisFlag
     Plot_BRIR(BRIR_data, BRIR_DS, BRIR_ER, BRIR_LR, Plot_data);
 end
 
-hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...');
+hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...', ...
+    'Name', Plot_data.name);
 for iDir = 1 : nDirs
     hbar.iterate();
     if iDir == 1 % export identical late reverberation only once

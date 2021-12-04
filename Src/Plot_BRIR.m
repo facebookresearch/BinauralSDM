@@ -48,7 +48,7 @@ fig.Position(3) = fig.Position(3) * size(BRIR_DS, 2);
 fig.Position(4) = fig.Position(4) * 2;
 
 tl = tiledlayout(size(BRIR_DS, 2), 2, 'TileSpacing', 'tight', 'Padding', 'tight');
-title(tl, Plot_data.name);
+title(tl, Plot_data.name, 'Interpreter', 'none');
 for ear = 1 : size(BRIR_DS, 2)
     ax(ear) = nexttile(tl);
     plot(t, mag2db(abs(BRIR_DS(:, ear, BRIR_idx))), 'Color', Plot_data.colors(2, :));
