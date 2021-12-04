@@ -130,7 +130,7 @@ if ~isempty(Plot_data) && Plot_data.PlotAnalysisFlag
     xticklabels(string(ceil(BRIR_data.RTFreqVector)));
     xlabel('Frequency band [Hz]');
     ylabel('Reverberation time [s]');
-    lgd = legend(lgd_str, 'Location', 'SouthWest', 'Orientation', 'horizontal');
+    lgd = legend(lgd_str, 'Location', 'North', 'Orientation', 'horizontal');
     title(lgd, 'Late reverberation RTmod');
     grid on;
     
