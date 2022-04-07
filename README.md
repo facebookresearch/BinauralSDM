@@ -80,7 +80,41 @@ If you use this code in your research, please cite the following [paper](https:/
 
 ## Changelog
 
-**2021-11-17**
+### 2022-04-07
+*This update introduces changes to the names and parametrisation of internal functions which may break compatability to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying indivudally required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
+- Update `README.md` with improved formatting, links to publications and changelog
+- Update all functions to be more verbose by cleaning up and adding logging messages
+- Update all function headers to follow consistent parameter documentation (e.g. `create_BRIR_data.m` and `create_SRIR_data.m`)
+- Update all functions to follow consistent code formatting
+- Rename function names to follow a more consistent convention:
+  - `align_DOA.m` ->  `Align_DOA.m`
+  - `ModifyReverbSlope.m` -> `Modify_Reverb_Slope.m`
+  - `removeInitialDelay.m` -> `Remove_BRIR_Delay.m`
+  - `split_BRIR.m` -> `Split_BRIR.m`
+- Update `Align_DOA.m` to use the beforehand estimated DOA of direct sound instead of averaging again (the former implementation as well as other methods are documented in the function)
+- Add `Apply_Allpass.m` to extract functionality from `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` for modifying late reverberation
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` to skip downloading HRTF if already present
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` to use adjustable sampling frequency for allpass filters
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` to skip redundant exports of late reverberation
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` to generate verbose plots for all analysis, processing and export steps
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m` to provide user-defined DOA rotation before DOA quantization
+- Update `Modify_Reverb_Slope.m` to provide experimental RTmod regularization (deactivated by default)
+- Add `Plot_BRIR.m` to generate and export a plot of a BRIR in (0, 0) deg direction
+- Add `Plot_DOA.m` to generate and export a plot of SDM DOAs after SRIR analysis
+- Add `Plot_Spec.m` to generate and export a plot of SDM spectra after SRIR analysis
+- Update `PreProcess_P_RIR.m` to skip denoising if the Matlab Curve Fitting Toolbox is unavailable 
+- Update `PreProcess_Synthesize_SDM_Binaural.m` and `Synthesize_SDM_Binaural.m` to stack left and right HRIRs in single variable 
+- Update `Read_HRTF.m` to give instructions if the SOFA API is unavailable 
+- Add `Rotate_DOA.m` extracting functionality used in `align_DOA.m` and `Synthesize_SDM_Binaural.m`
+- Update `SaveBRIR.m` to make export of combined and separate direct sound and early reflection optional
+- Update `Synthesize_SDM_Binaural.m` to remove default specification of target BRIR length
+- Update `create_BRIR_data.m` to provide additional options for reverberation equalisation process
+- Add `roty.m` and `rotz.m` to eliminate dependency for Phased Array System Toolbox
+
+### 2021-11-17
+*This update allows the user to specify two new fields in BRIR_data:</br>
+**BRIR_data.BandsPerOctave:** Specifies the frequency resolution for the reverb equalization. The values can be 1 or 3. For smaller rooms, 1 is recommended. By default it is 3.</br>
+**BRIR_data.EqTxx:** To perform reverb equalization, the RT60 must be estimated. However, there is generally not enough SNR to obtain a true T60 estimation. This parameter allows the user to specify the desired Txx for the RT60 estimation. Generally, a value of 30 is recommended. However, this can blow up the RT estimation in cases where SNR is low. For small rooms and very dry spaces we recommend using a value of 20. By default it is 30.*
 - Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m`, `GetReverbTime.m`, `ModifyReverbSlope.m` `PreProcess_Synthesize_SDM_Binaural.m`, `getLundebyFOB.m` and `getLundebyRT30.m` with mew equalization options to make reverberation equalisation process more robust
 - Update `create_BRIR_data.m` and `PreProcess_Synthesize_SDM_Binaural.m` to provide additional options for reverberation equalisation process
 - Update `Read_HRTF.m` to fix loading of FRL HRTFs
