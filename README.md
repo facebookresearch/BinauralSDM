@@ -2,6 +2,7 @@
 
 Matlab code to generate binaural RIRs for arbitrary head orientations using the Spatial Decomposition Method [[1]](#references), [[2]](#references) using the BinauralSDM approach with RTMod+AP equalization from [[3]](#references).
 
+
 ## Installation and dependencies
 
 The following dependencies are necessary for the repository to run successfully. Please make sure that they are included in your Matlab search path before executing any demo:
@@ -24,6 +25,7 @@ The following dependencies are necessary for the repository to run successfully.
 
 - [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (may be skipped with minor code modifications) - by Mathworks.
 
+
 ## Demos
 
 Set your Matlab working directory to `./Src/Examples/` to execute the examples:
@@ -39,6 +41,7 @@ The file can be modified in a straightforward manner to accommodate other analys
 
 More examples will be added in the future, featuring modified decay slopes for reverberation time manipulations, algorithmic late reverberation, and spatial manipulations. 
 
+
 ## Microphone arrays
 
 Files for 3D printing of a microphone array holder (FRL Array) are included in `./Data/ArrayDesigns/`. These are hexahedral arrays (6 DPA 4060) with a center microphone (Earthworks M30/M50) and a diameter of 5 or 10cm.
@@ -47,7 +50,9 @@ Files for 3D printing of a microphone array holder (FRL Array) are included in `
 
 Other array geometries can be accommodated by modifying the file `./Src/create_MicGeometry.m`. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [[3]](#references) for details and justification).
 
+
 ## Citing BinauralSDM
+
 If you use this code in your research, please cite the following [paper](https://www.aes.org/e-lib/browse.cfm?elib=21010):
 ```
 @article{amengual20BSDM,
@@ -63,6 +68,7 @@ If you use this code in your research, please cite the following [paper](https:/
 }
 ```
 
+
 ## References
 
 [[1]](http://www.aes.org/e-lib/browse.cfm?elib=16664) S. Tervo, J. Patynen, A. Kuusinen, and T. Lokki, “Spatial Decomposition Method for Room Impulse Responses,” J. Audio Eng. Soc., vol. 61, no. 1/2, pp. 17–28 (2013 Jan.).
@@ -71,11 +77,28 @@ If you use this code in your research, please cite the following [paper](https:/
 
 [[3]](https://doi.org/10.17743/jaes.2020.0063) S. V. Amengual Gari, J. Arend, P. Calamia, P. Robinson, “Optimizations of the Spatial Decomposition Method for Binaural Reproduction,” J. Audio Eng. Soc., vol. 68, no. 12, pp. 959-976 (2020 Dec.), https://doi.org/10.17743/jaes.2020.0063.
 
+
+## Changelog
+
+**2021-11-17**
+- Update `Demo_BinauralSDM_QuantizedDOA_andRTModAP.m`, `GetReverbTime.m`, `ModifyReverbSlope.m` `PreProcess_Synthesize_SDM_Binaural.m`, `getLundebyFOB.m` and `getLundebyRT30.m` with mew equalization options to make reverberation equalisation process more robust
+- Update `create_BRIR_data.m` and `PreProcess_Synthesize_SDM_Binaural.m` to provide additional options for reverberation equalisation process
+- Update `Read_HRTF.m` to fix loading of FRL HRTFs
+- Update `create_FIR_eq.m` to use linear instead of cubic interpolation
+- Update `create_MicGeometry.m` to add custom FRL array
+- Update `SaveBRIR.m`, `SaveRenderingStructs.m` and `create_SRIR_data.m` to add custom path
+- Update `read_RIR.m` to perform if sampling frequencies are mismatched
+
+
 ## Contributing
+
 See the [CONTRIBUTING](CONTRIBUTING.md) file for how to help out.
 
+
 ## License
+
 BinauralSDM is CC-BY-4.0 licensed, as found in the [LICENSE](LICENSE) file.
+
 
 ## Contact
 
