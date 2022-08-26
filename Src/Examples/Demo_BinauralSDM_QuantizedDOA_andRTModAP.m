@@ -37,7 +37,7 @@
 % Method for Binaural Reproduction", JAES 2020.
 
 % Author: Sebastia Amengual (samengual@fb.com)
-% Last modified: 11/17/2021
+% Last modified: 08/26/2022
 
 clear; clc; close all;
 
@@ -302,7 +302,7 @@ for iDir = 1 : nDirs
     else
         BRIR_LR_export = [];
     end
-    SaveBRIR(BRIR_data, BRIR_DS(:, :, iDir), BRIR_DSER(:, :, iDir), ...
+    Save_BRIR_wav(BRIR_data, BRIR_DS(:, :, iDir), BRIR_DSER(:, :, iDir), ...
         BRIR_ER(:, :, iDir), BRIR_LR_export, BRIR_data.Directions(iDir, :));
 end
 hbar.iterate();
