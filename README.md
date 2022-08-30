@@ -80,6 +80,12 @@ If you use this code in your research, please cite the following [paper](https:/
 
 ## Changelog
 
+### 2022-08-30
+- Add `Save_BRIR_sofa.m` to export rendered BRIRs as SOFA-file (activated by default over exporting individual WAV-files with according changes for new flags in `create_BRIR_data.m`)
+- Rename `SaveBRIR.m` into `Save_BRIR_wav.m`
+- Add `Initialize_SOFA.m` to extract functionality from `Read_HRTF.m` to be reusable
+- Remove and add `Align_DOA.m` and `Split_BRIR.m` to fix git capitalization issues
+
 ### 2022-04-07
 *This update introduces changes to the names and parametrisation of internal functions which may break compatability to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying indivudally required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
 - Update `README.md` with improved formatting, links to publications and changelog
@@ -87,7 +93,7 @@ If you use this code in your research, please cite the following [paper](https:/
 - Update all function headers to follow consistent parameter documentation (e.g. `create_BRIR_data.m` and `create_SRIR_data.m`)
 - Update all functions to follow consistent code formatting
 - Rename function names to follow a more consistent convention:
-  - `align_DOA.m` ->  `Align_DOA.m`
+  - `align_DOA.m` -> `Align_DOA.m`
   - `ModifyReverbSlope.m` -> `Modify_Reverb_Slope.m`
   - `removeInitialDelay.m` -> `Remove_BRIR_Delay.m`
   - `split_BRIR.m` -> `Split_BRIR.m`
