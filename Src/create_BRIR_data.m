@@ -10,12 +10,16 @@ function BRIR_data = create_BRIR_data (varargin)
 %               default: 'SOFA', other options: 'FRL_HRTF'.
 %       - HRTF_Path: File name of the HRTF used for re-synthesis - string -
 %               default: '../../Data/HRIRs/KU100_HRIR_FULL2DEG_Koeln.sofa'.
+%       - ExportSofaFlag: Flag to determine if BRIRs should be exported in 
+%               a SOFA-file - boolean - default: true.
+%       - ExportWavFlag: Flag to determine if BRIRs should be exported in 
+%               indivudal WAV-files - boolean - default: false.
 %       - ExportDSERcFlag: Flag to determine if BRIRs should be exported 
-%               with direct sound and early reflections combined - boolean 
-%               - default: true.
+%               with direct sound and early reflections combined (WAV-files
+%               only)- boolean - default: true.
 %       - ExportDSERsFlag: Flag to determine if BRIRs should be exported 
-%               with direct sound and early reflections separated - boolean 
-%               - default: true.
+%               with direct sound and early reflections separated 
+%               (WAV-files only)- boolean - default: true.
 %       - BRIR_DestinationPath: Path to the BRIR database for saving -
 %               string - default: '../../Data/Rendered_BRIRs/'.
 %       - Length: Desired length of BRIR in seconds, will be chosen by 
@@ -70,8 +74,8 @@ function BRIR_data = create_BRIR_data (varargin)
 
 % Check input arguments
 listNames = {'fs','HRTF_Subject','HRTF_Type','HRTF_Path',...
-    'ExportDSERcFlag','ExportDSERsFlag','DestinationPath',...
-    'Length','Split','MixingTime','AzOrient','ElOrient',...
+    'ExportSofaFlag','ExportWavFlag','ExportDSERcFlag','ExportDSERsFlag',...
+    'DestinationPath','Length','Split','MixingTime','AzOrient','ElOrient',...
     'RenderingCondition','Attenuation','QuantizeDOAFlag','DOADirections',...
     'DOAAzOffset','DOAElOffset','BandsPerOctave','EqTxx','RTModRegFreq'};
 
@@ -120,6 +124,8 @@ BRIR_data.BandsPerOctave = 3;
 BRIR_data.EqTxx = 30;
 BRIR_data.RTModRegFreq = false;
 
+BRIR_data.ExportSofaFlag = true;
+BRIR_data.ExportWavFlag = false;
 BRIR_data.ExportDSERcFlag = true;
 BRIR_data.ExportDSERsFlag = true;
 BRIR_data.DestinationPath = '../../Data/Rendered_BRIRs/';

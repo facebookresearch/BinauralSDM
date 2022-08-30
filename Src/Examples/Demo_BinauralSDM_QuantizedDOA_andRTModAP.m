@@ -135,8 +135,10 @@ AzOrient         = (-180:2:180)';   % Render BRIRs every 2 degrees in azimuth.
 ElOrient         = (-90:5:90)';     % Render BRIRs every 5 degrees in elevation.
 PlotAnalysisFlag = true;            % Flag to determine if analysis results should be plotted.
 PlotExportFlag   = true;            % Flag to determine if analysis result plots should be exported.
-ExportDSERcFlag  = true;            % Flag to determine if BRIRs should be exported with direct sound and early reflections combined.
-ExportDSERsFlag  = true;            % Flag to determine if BRIRs should be exported with direct sound and early reflections separated.
+ExportSofaFlag   = true;            % Flag to determine if BRIRs should be exported in a SOFA-file.
+ExportWavFlag    = false;           % Flag to determine if BRIRs should be exported in indivudal WAV-files.
+ExportDSERcFlag  = true;            % Flag to determine if BRIRs should be exported with direct sound and early reflections combined (WAV-files only).
+ExportDSERsFlag  = true;            % Flag to determine if BRIRs should be exported with direct sound and early reflections separated (WAV-files only).
 DestinationPath = '../../Data/RenderedBRIRs/'; % Folder where the resulting BRIRs will be saved.
 
 % Append configuration to destination path
@@ -161,6 +163,8 @@ BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
                              'DOAElOffset',DOAElOffset,...
                              'QuantizeDOAFlag',QuantizeDOAFlag,...
                              'DOADirections',DOADirections,...
+                             'ExportSofaFlag',ExportSofaFlag,...
+                             'ExportWavFlag',ExportWavFlag,...
                              'ExportDSERcFlag',ExportDSERcFlag,...
                              'ExportDSERsFlag',ExportDSERsFlag,...
                              'DestinationPath',DestinationPath,...
@@ -168,7 +172,7 @@ BRIR_data = create_BRIR_data('MixingTime',SRIR_data.MixingTime,...
 clear HRIR_Subject HRIR_Type HRIR_Path BandsPerOctave EqTxx RTModRegFreq ...
     BRIR_Length NamingCond BRIR_Atten AzOrient ElOrient ...
     DOAAzOffset DOAElOffset QuantizeDOAFlag DOADirections ...
-    ExportDSERcFlag ExportDSERsFlag DestinationPath;
+    ExportSofaFlag ExportWavFlag ExportDSERcFlag ExportDSERsFlag DestinationPath;
 
 % Initialize visualization struct (from SDM Toolbox, with additions)
 Plot_data = createVisualizationStruct(...
@@ -293,24 +297,32 @@ if Plot_data.PlotAnalysisFlag
     Plot_BRIR(BRIR_data, BRIR_DS, BRIR_ER, BRIR_LR, Plot_data);
 end
 
-hbar = parfor_progressbar(nDirs + 1, 'Please wait, saving (step 2/2) ...', ...
+nFiles = BRIR_data.ExportSofaFlag + (BRIR_data.ExportWavFlag * nDirs) + 1;
+hbar = parfor_progressbar(nFiles, 'Please wait, saving (step 2/2) ...', ...
     'Name', Plot_data.name);
-for iDir = 1 : nDirs
+if BRIR_data.ExportSofaFlag
     hbar.iterate();
-    if iDir == 1 % export identical late reverberation only once
-        BRIR_LR_export = BRIR_LR;
-    else
-        BRIR_LR_export = [];
+    Save_BRIR_sofa(BRIR_data, BRIR_DSER, BRIR_LR);
+end
+if BRIR_data.ExportWavFlag
+    for iDir = 1 : nDirs
+        hbar.iterate();
+        if iDir == 1 % export identical late reverberation only once
+            BRIR_LR_export = BRIR_LR;
+        else
+            BRIR_LR_export = [];
+        end
+        Save_BRIR_wav(BRIR_data, BRIR_DS(:, :, iDir), BRIR_DSER(:, :, iDir), ...
+            BRIR_ER(:, :, iDir), BRIR_LR_export, BRIR_data.Directions(iDir, :));
     end
-    Save_BRIR_wav(BRIR_data, BRIR_DS(:, :, iDir), BRIR_DSER(:, :, iDir), ...
-        BRIR_ER(:, :, iDir), BRIR_LR_export, BRIR_data.Directions(iDir, :));
 end
 hbar.iterate();
 SaveRenderingStructs(SRIR_data, BRIR_data);
 close(hbar);
-clear iDir hbar BRIR_LR_export nDirs;
+clear iDir hbar BRIR_LR_export nDirs nFiles;
 
 %%
 time_exec = toc(time_start);
 fprintf('\n... completed in %.0fh %.0fm %.0fs.\n', ...
     time_exec/60/60, time_exec/60, mod(time_exec, 60));
+clear time_start time_exec;
