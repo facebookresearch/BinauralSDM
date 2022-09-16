@@ -80,7 +80,7 @@ If you use this code in your research, please cite the following [paper](https:/
 
 ## Changelog
 
-### 2022-08-30
+### 2022-08-30 - v0.5
 - Add `Save_BRIR_sofa.m` to export rendered BRIRs as SOFA-file (activated by default over exporting individual WAV-files with according changes for new flags in `create_BRIR_data.m`)
 - Rename `SaveBRIR.m` into `Save_BRIR_wav.m`
 - Add `Initialize_SOFA.m` to extract functionality from `Read_HRTF.m` to be reusable
@@ -117,7 +117,7 @@ If you use this code in your research, please cite the following [paper](https:/
 - Update `create_BRIR_data.m` to provide additional options for reverberation equalisation process
 - Add `roty.m` and `rotz.m` to eliminate dependency for Phased Array System Toolbox
 
-### 2021-11-17
+### 2021-11-17 - v0.1
 *This update allows the user to specify two new fields in BRIR_data:</br>
 **BRIR_data.BandsPerOctave:** Specifies the frequency resolution for the reverb equalization. The values can be 1 or 3. For smaller rooms, 1 is recommended. By default it is 3.</br>
 **BRIR_data.EqTxx:** To perform reverb equalization, the RT60 must be estimated. However, there is generally not enough SNR to obtain a true T60 estimation. This parameter allows the user to specify the desired Txx for the RT60 estimation. Generally, a value of 30 is recommended. However, this can blow up the RT estimation in cases where SNR is low. For small rooms and very dry spaces we recommend using a value of 20. By default it is 30.*
