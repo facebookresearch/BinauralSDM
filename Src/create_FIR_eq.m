@@ -22,3 +22,5 @@ d = fdesign.arbmag('N,F,A',N,F_upsampled,A_upsampled);
 Hd = design(d,'freqsamp','SystemObject',true);
 fir_filter = Hd.Numerator';
 [~, fir_filter] = rceps(fir_filter);
+
+end

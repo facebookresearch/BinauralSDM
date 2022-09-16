@@ -9,23 +9,36 @@ function SRIR_data = PreProcess_P_RIR(SRIR_data)
 % Dependencies: Denoising algorithm from Cabrera et al. included in AARAE
 %
 % Author: Sebastia V. Amengual
-% Last modified: 4/19/19
-
+% Last modified: 11/17/2021
 
 % Denoising Pressure RIR
-if SRIR_data.Denoise == 1
+if SRIR_data.Denoise
+    fprintf('\nStarted denoising pressure RIR\n');
+    
     try
         SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
             SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);
-    catch
-        try 
-            SRIR_data.DenoiseHighFreq = 8000;
-            SRIR_data.DenoiseLowFreq = 125;
-            SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
-                SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);
-            disp('The pressure RIR could not be denoised with the user defined parameters. Trying with LowFreq=125Hz, HigFreq=8kHz')
-        catch
-            disp('The pressure RIR could not be denoised. It might be too short, have not enough SNR or be already denoised')
+        fprintf('Ended denoising pressure RIR.\n\n');
+        
+    catch ME
+        if strcmp(ME.identifier, 'MATLAB:UndefinedFunction')
+            fprintf('Skipped denoising the pressure RIR.\n');
+            warning('Matlab Curve Fitting Toolbox is unavailable.');
+        else
+            try
+                fprintf(['invalid user defined parameters.\n', ...
+                    'Trying with LowFreq=125Hz, HigFreq=8kHz ... ']);
+                SRIR_data.DenoiseHighFreq = 8000;
+                SRIR_data.DenoiseLowFreq = 125;
+                SRIR_data.P_RIR = denoise_RIR(SRIR_data.P_RIR,SRIR_data.fs,...
+                    SRIR_data.DenoiseHighFreq,SRIR_data.DenoiseLowFreq,SRIR_data.PlotDenoisedRIR);
+                fprintf('Ended denoising pressure RIR.\n\n');
+                
+            catch
+                fprintf('Skipped denoising pressure RIR.\n');
+                warning(['The pressure RIR could not be denoised. It might ', ...
+                    'be too short, have not enough SNR or be already denoised.']);
+            end
         end
     end
 end
@@ -33,11 +46,13 @@ end
 % Circular shifting
 SRIR_data = shift_P_RIR(SRIR_data);
 
-% Find index of direct sound (-34dB to highest value)
-%SRIR_data.DS_idx = find(abs(SRIR_data.P_RIR)>0.02*max(abs(SRIR_data.P_RIR)),1,'first');
+% Find index of direct sound
 SRIR_data.DS_idx = findDirect(SRIR_data.P_RIR);
 
+% Find index of onset of direct sound
 SRIR_data = getDSonset(SRIR_data);
 
-% Cropping RIR to desired length
-SRIR_data.P_RIR = SRIR_data.P_RIR(SRIR_data.DSonset:SRIR_data.DSonset+SRIR_data.fs*SRIR_data.Length-1,1);
+% Cropping RIR before onset
+SRIR_data.P_RIR = SRIR_data.P_RIR(SRIR_data.DSonset:end, :);
+
+end

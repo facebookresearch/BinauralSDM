@@ -8,14 +8,14 @@ function SRIR_data = Analyze_SRIR(SRIR_data, SDM_struct)
 %       - SDM Toolbox https://www.mathworks.com/matlabcentral/fileexchange/56663-sdm-toolbox
 %
 % Author: Sebastià V. Amengual
-% Last Modified: 07/09/20
+% Last Modified: 11/16/2021
 
 
 % Computing DOA
 SRIR_data.DOA = SDMPar(SRIR_data.Raw_RIR, SDM_struct);
 
-if SRIR_data.DiffComponent == 1
-    error('This will be implemented in a future release!')  
+if SRIR_data.DiffComponent
+    error('This will be implemented in a future release!');
 %     disp('Estimating Diffuse Component'); tic;
 %     SRIR_data.DiffFunc = estimateDiffuseness(SRIR_data);
 %     SRIR_data.DiffFunc = SRIR_data.DiffFunc(SRIR_data.DSonset:end,:);
@@ -26,24 +26,22 @@ if SRIR_data.DiffComponent == 1
 %     timer = toc;
 %     disp(['Done! Time elapsed: ' num2str(timer) 'seconds']);
 end
-
     
 % The Raw RIR and DOA data need to be cropped now, after the DOA and
 % diffuseness estimation. If the first sample in the raw RIR is already 
-% the direct  sound, the DOA estimation is wrong - it does not find a 
+% the direct sound, the DOA estimation is wrong - it does not find a 
 % solution and returns 0º,0º.
 SRIR_data.Raw_RIR = SRIR_data.Raw_RIR(SRIR_data.DSonset:end,:);
-SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end,:);
+SRIR_data.DOA = SRIR_data.DOA(SRIR_data.DSonset:end, :);
+SRIR_data.DS_idx = SRIR_data.DS_idx - SRIR_data.DSonset;
+SRIR_data.DSonset = 1;
 
-disp('Smoothing DOA data'); tic;
 SRIR_data = Smooth_DOA(SRIR_data);
-timer = toc;
-disp(['Done! Time elapsed: ' num2str(timer) 'seconds']);
 
-if SRIR_data.AlignDOA == 1
-    SRIR_data = align_DOA(SRIR_data);
+if SRIR_data.AlignDOA
+    SRIR_data = Align_DOA(SRIR_data);
 end
 
+fprintf('\n');
 
-
-
+end

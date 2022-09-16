@@ -45,3 +45,5 @@ if plotflag
     hold on
     plot(SRIR_data.P_RIR);
 end
+
+end
