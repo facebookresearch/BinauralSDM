@@ -1,3 +1,5 @@
+% Copyright (c) Facebook, Inc. and its affiliates.
+
 function BRIR_late = Apply_Allpass(BRIR_late, BRIR_data)
 
 disp('Started applying allpass to late reverberation')
