@@ -23,7 +23,7 @@ The following dependencies are necessary for the repository to run successfully.
 
 - [Matlab Curve Fitting Toolbox](https://www.mathworks.com/products/curvefitting.html) (for `denoise_RIR.m`) - by Mathworks.
 
-- [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (may be skipped with minor code modifications) - by Mathworks.
+- [Matlab Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html) (optional, parallelization will be skipped if unavailable) - by Mathworks.
 
 
 ## Demos
@@ -46,7 +46,7 @@ More examples will be added in the future, featuring modified decay slopes for r
 
 Files for 3D printing of a microphone array holder (FRL Array) are included in `./Data/ArrayDesigns/`. These are hexahedral arrays (6 DPA 4060) with a center microphone (Earthworks M30/M50) and a diameter of 5 or 10cm.
 
-<img src="./Data/ArrayDesigns/FRLArray_10cmDiameter_pic.jpg" width="200">
+<img src="./Data/ArrayDesigns/FRLArray_10cmDiameter_pic.jpg" width="200" alt="Depiction of the FRL Array with mounted microphones">
 
 Other array geometries can be accommodated by modifying the file `./Src/create_MicGeometry.m`. The current code also accommodates Tetramic and Eigenmike arrays (with TDoA estimation) but we recommend to not use them (see [[3]](#references) for details and justification).
 
@@ -87,7 +87,7 @@ If you use this code in your research, please cite the following [paper](https:/
 - Remove and add `Align_DOA.m` and `Split_BRIR.m` to fix git capitalization issues
 
 ### 2022-04-07
-*This update introduces changes to the names and parametrisation of internal functions which may break compatability to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying indivudally required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
+*This update introduces changes to the names and parametrisation of internal functions which may break compatability to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying individually required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
 - Update `README.md` with improved formatting, links to publications and changelog
 - Update all functions to be more verbose by cleaning up and adding logging messages
 - Update all function headers to follow consistent parameter documentation (e.g. `create_BRIR_data.m` and `create_SRIR_data.m`)
