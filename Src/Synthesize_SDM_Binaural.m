@@ -31,7 +31,7 @@ if full
 else
     N = BRIR_data.MixingTime + BRIR_data.TimeGuard;
 end
-N = ceil(N * BRIR_data.fs);
+N = floor(N * BRIR_data.fs);
 
 HRIR_len = size(HRIR, 1);
 SRIR_data.Diff_BRIR = zeros(length(SRIR_data.P_RIR)+HRIR_len-1, 2);

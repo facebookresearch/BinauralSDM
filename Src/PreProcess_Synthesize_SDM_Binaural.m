@@ -61,7 +61,7 @@ SRIR_data.DOA = [DOA_x, DOA_y, DOA_z];
 % Prepare filter bank for reverb compensation
 BRIR_data.FilterBank_minFreq = 62.5;
 BRIR_data.FilterBank_maxFreq = 20000;
-BRIR_data.FilterBank_snfft = (BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs;
+BRIR_data.FilterBank_snfft = floor((BRIR_data.MixingTime+BRIR_data.TimeGuard)*BRIR_data.fs);
 
 [BRIR_data.G,BRIR_data.FilterBank_g,BRIR_data.FilterBank_f1,BRIR_data.FilterBank_f2] = ...
     oneOver_n_OctBandFilter(2*BRIR_data.FilterBank_snfft, BRIR_data.BandsPerOctave, BRIR_data.fs, BRIR_data.FilterBank_minFreq , BRIR_data.FilterBank_maxFreq);

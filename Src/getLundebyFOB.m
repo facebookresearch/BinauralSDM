@@ -20,10 +20,15 @@ end
 fcentre = f2 / fd;
 
 for iOb = 1 : size(g, 2)
+    if iOb == 2
+        plotFlag = 1;
+    else 
+        plotFlag = 0;
+    end
     H_freq = fft(signal, 2*snfft);
     G = fft(g, 2*snfft);
     sigFilt = real(ifft(G(:, iOb) .* H_freq));
-    RTs(iOb) = getLundebyRT30(sigFilt, Fs, 0.02, Tn);
+    RTs(iOb) = getLundebyRT30(sigFilt, Fs, 0.002, Tn,plotFlag);
 end
 
 end

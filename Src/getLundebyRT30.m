@@ -1,6 +1,6 @@
 % Copyright (c) Facebook, Inc. and its affiliates.
 
-function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, Fs, integrationWin, Tn)
+function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, Fs, integrationWin, Tn, plotFlag)
 %getLundebyRT calculates the truncated and energy compensated T30 using the
 %Lundeby method (Acta Acoustica Vol. 81 1995)
 %   getLundebyRT takes in a single channel (N,1) impulse response, the
@@ -117,7 +117,12 @@ function [reverbTime, intersectionPoint, dirSoundLoc] = getLundebyRT30(roomIR, F
         LS_y = schrCrv(upperLimPt:lowerLimPt);
         LS_n = length(LS_y);
         LS_x = (1:LS_n)';
-
+        if plotFlag
+            plot(schrCrv(upperLimPt:upperLimPt+48e3),'color',[0.5 0.5 0.5]);
+            ylim([-40 0])
+            drawnow
+            hold on
+        end
         [rtSlope] = linRegression(LS_x, LS_y);
 
         reverbTime = -60/rtSlope/Fs; %T30
