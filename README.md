@@ -87,7 +87,7 @@ If you use this code in your research, please cite the following [paper](https:/
 - Remove and add `Align_DOA.m` and `Split_BRIR.m` to fix git capitalization issues
 
 ### 2022-04-07
-*This update introduces changes to the names and parametrisation of internal functions which may break compatability to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying individually required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
+*This update introduces changes to the names and parametrisation of internal functions which may break compatibility to code using former versions of this toolbox. When applying the method it is therefore strongly advised to start by applying individually required modifications to the provided [Demo](#demos). The script has been improved in terms of documentation, variable naming, logging verbosity, plot generation and data export.*
 - Update `README.md` with improved formatting, links to publications and changelog
 - Update all functions to be more verbose by cleaning up and adding logging messages
 - Update all function headers to follow consistent parameter documentation (e.g. `create_BRIR_data.m` and `create_SRIR_data.m`)
