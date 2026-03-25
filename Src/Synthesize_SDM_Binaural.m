@@ -54,7 +54,7 @@ SRIR_data.Diff_BRIR =  SRIR_data.Diff_BRIR(1:N, :);
 
 az_deg = rot(1);
 el_deg = rot(2);
-DOA_cart = (rotz(az_deg) * roty(-el_deg) * SRIR_data.DOA')';
+DOA_cart = (roty(-el_deg) * rotz(-az_deg)  * SRIR_data.DOA')';
 [idx, ~] = knnsearch(BRIR_data.HRTF_cartDir, DOA_cart(1:N, :));
 
 SRIR_data.Spec_BRIR = zeros(length(SRIR_data.P_RIR)+HRIR_len-1, 2);
